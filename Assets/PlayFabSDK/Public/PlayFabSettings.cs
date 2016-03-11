@@ -30,7 +30,7 @@ namespace PlayFab
             where TResult : PlayFabResultCommon;
 
         public static string ProductionEnvironmentUrl = ".playfabapi.com";
-        public static string TitleId = null; // You must set this value for PlayFabSdk to work properly (Found in the Game Manager for your title, at the PlayFab Website)
+        public static string TitleId = "5F90"; // You must set this value for PlayFabSdk to work properly (Found in the Game Manager for your title, at the PlayFab Website)
         public static PlayFabLogLevel LogLevel = PlayFabLogLevel.Warning | PlayFabLogLevel.Error;
         public static bool IsTesting = false;
         public static WebRequestType RequestType = WebRequestType.UnityWww;
