@@ -13,6 +13,7 @@ public class PlayFabUserLogin : MonoBehaviour
     public Text errorText;
 
     public Canvas createAccount;
+    public Canvas mainMenu;
 
     public static PlayFabUserLogin playFabUserLogin;
 

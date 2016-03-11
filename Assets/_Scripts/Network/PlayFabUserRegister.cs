@@ -14,6 +14,7 @@ public class PlayFabUserRegister : MonoBehaviour
     public Text errorText;
 
     public Canvas login;
+    public Canvas mainMenu;
 
     public static PlayFabUserRegister playFabUserRegister;
 
