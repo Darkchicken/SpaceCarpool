@@ -35,4 +35,22 @@ public class PlayFabUserLogin : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void Host()
+    {
+        PhotonNetwork.CreateRoom(null);
+        Debug.Log("Created Room: "+ PhotonNetwork.room.name);
+    }
+    public void Join()
+    {
+        //use this to join a named room
+        //PhotonNetwork.JoinRoom();
+        PhotonNetwork.JoinRandomRoom();
+        Debug.Log("Joining Room");
+    }
+    public void BeginGame()
+    {
+        Debug.Log("Starting Game");
+        PhotonNetwork.LoadLevel("Test");
+    }
+
 }

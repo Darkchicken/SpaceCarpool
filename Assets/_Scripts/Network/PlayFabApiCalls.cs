@@ -98,4 +98,5 @@ public class PlayFabApiCalls : MonoBehaviour {
             Debug.Log("Photon Connection Failed! " + error.ErrorMessage.ToString()); 
         });
     }
+    
 }
