@@ -12,6 +12,8 @@ public class PlayFabUserLogin : MonoBehaviour
     public InputField loginPasswordField;
     public Text errorText;
 
+    public InputField joinInputField;
+
     public Canvas createAccount;
     public Canvas mainMenu;
 
@@ -37,15 +39,24 @@ public class PlayFabUserLogin : MonoBehaviour
 
     public void Host()
     {
-        PhotonNetwork.CreateRoom(null);
-        Debug.Log("Created Room: "+ PhotonNetwork.room.name);
+        PhotonNetwork.CreateRoom(PlayFabDataStore.userName);
+        //Debug.Log("Created Room: "+ PhotonNetwork.room.name);
     }
     public void Join()
     {
+        if(joinInputField.text != null)
+        {
+            Debug.Log("Attempting to join room: "+ joinInputField.text);
+            PhotonNetwork.JoinRoom(joinInputField.text);
+        }
+        else
+        {
+            Debug.Log("Input a room name in the text field");
+        }
         //use this to join a named room
         //PhotonNetwork.JoinRoom();
-        PhotonNetwork.JoinRandomRoom();
-        Debug.Log("Joining Room");
+        //PhotonNetwork.JoinRandomRoom();
+        //
     }
     public void BeginGame()
     {

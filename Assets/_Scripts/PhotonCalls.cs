@@ -47,6 +47,10 @@ public class PhotonCalls : PunBehaviour
         */
     }
 
+    void OnPhotonJoinFailed()
+    {
+        Debug.Log("Cannot join room, room name does not exist");
+    }
     //if the player fails to join a random room
     void OnPhotonRandomJoinFailed()
     {

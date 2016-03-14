@@ -22,6 +22,7 @@ public class PlayFabApiCalls : MonoBehaviour {
             PlayFabUserLogin.playFabUserLogin.gameObject.SetActive(false);
             PlayFabUserLogin.playFabUserLogin.mainMenu.gameObject.SetActive(true);
             PlayFabDataStore.playFabId = result.PlayFabId;
+            PlayFabDataStore.userName = username;
             PlayFabDataStore.sessionTicket = result.SessionTicket;
             GetPhotonToken();
         }, (error) =>
@@ -45,6 +46,7 @@ public class PlayFabApiCalls : MonoBehaviour {
         {
             PlayFabDataStore.playFabId = result.PlayFabId;
             PlayFabDataStore.sessionTicket = result.SessionTicket;
+            PlayFabDataStore.userName = username;
             PlayFabUserRegister.playFabUserRegister.gameObject.SetActive(false);
             PlayFabUserRegister.playFabUserRegister.mainMenu.gameObject.SetActive(true);
             Debug.Log("New Account Created!");
