@@ -10,4 +10,5 @@ public class PlayFabDataStore : MonoBehaviour
     public static string sessionTicket;
     public static string playFabId;
     public static string userName;
+   
 }

@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon;
-
+using UnityEngine.UI;
 public class PhotonMatchmaker : PunBehaviour
 {
+    public GameObject gameManager;
     //public Transform spawnPoint;
     //public Transform enemySpawnPoint;
-
+    public Text debugText;
     void Start()
     {
         //PhotonNetwork.ConnectUsingSettings("0.1");
@@ -37,6 +38,30 @@ public class PhotonMatchmaker : PunBehaviour
         //PlayFabUserLogin.playfabUserLogin.Authentication("SUCCESS!", 2); //change the text of authentication text
         Debug.Log("Join Room Successfully!");
         Debug.Log("Room name is: "+PhotonNetwork.room);
+        debugText.text = "Join Room Successfully! Room name is: " + PhotonNetwork.room;
+
+        //if you are not the host
+        if (!PhotonNetwork.isMasterClient)
+        {
+            //check if joining player is near host
+            if (gameManager.GetComponent<CheckLocation>().CompareLocation())
+            {
+                Debug.Log("You are near host, join is complete");
+                debugText.text = "You are near host, join is complete";
+            }
+            //if they are not, leave room
+            else
+            {
+                Debug.Log("Cannot Join room, you are not near host");
+                debugText.text = "Cannot Join room, you are not near host";
+                PhotonNetwork.LeaveRoom();
+            }
+        }
+
+
+
+
+
 
 
         //Everytime a room created by a user, this part of the code has to be called to store the room name on playfab
@@ -51,6 +76,8 @@ public class PhotonMatchmaker : PunBehaviour
         //player.GetComponent<PlayerCombatManager>().enabled = true;
 
     }
+   
+
 
 
 }

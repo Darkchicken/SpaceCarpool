@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using Photon;
 
 public class PhotonCalls : PunBehaviour
 {
+
     GameObject spawnPoint;
+    public Text debugText;
     // static string friendRoomName = null; // get this directly from playfabdatastore
 
     public static void NewRoom()
@@ -46,10 +49,11 @@ public class PhotonCalls : PunBehaviour
         }
         */
     }
-
+    //THIS DOESNT WORK
     void OnPhotonJoinFailed()
     {
         Debug.Log("Cannot join room, room name does not exist");
+        debugText.text = "Cannot join room, room name does not exist";
     }
     //if the player fails to join a random room
     void OnPhotonRandomJoinFailed()
