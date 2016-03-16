@@ -3,7 +3,11 @@ using System.Collections;
 
 public class FiringMechanic : MonoBehaviour {
 
-	// Use this for initialization
+    private float fireRate = 0.3f;
+    private float nextFire;
+    private RaycastHit hit;
+    private float range;    //set later on, for now we'll use mathf.infinity
+
 	void Start () {
 	
 	}
