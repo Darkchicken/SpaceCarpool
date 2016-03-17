@@ -38,13 +38,13 @@ public class CursorCenterLock : MonoBehaviour
 
         cameraTransform = transform;
 
-        if (rigidbody)
+        if (GetComponent<Rigidbody>())
         {
-            rigidbody.freezeRotation = true;
+            GetComponent<Rigidbody>().freezeRotation = true;
         }
     }
 
-    void Update()
+    void Update2()
     {
 
         //Look direction
