@@ -8,6 +8,12 @@ public class CheckLocation : MonoBehaviour {
     public Text debugText;
     bool updatePosition = false;
 
+    float distanceTimer = 0;
+    //player will be kicked if out of range for 30 sec
+    float timeToKick = 30f;
+    //checks if player is currently in range of host
+    bool inRange;
+
     public float myLon;
     public float myLat;
     public float masterLon;
@@ -16,7 +22,9 @@ public class CheckLocation : MonoBehaviour {
     {
         // First, check if user has location service enabled
         if (!Input.location.isEnabledByUser)
+        {
             yield break;
+        }
 
         // Start service before querying location
         Input.location.Start();
@@ -56,6 +64,7 @@ public class CheckLocation : MonoBehaviour {
 
     void Update()
     {
+       
         if (updatePosition == true)
         {
             //debugText.text = ("Location (lat/long/alt): " + Input.location.lastData.latitude + " / " + Input.location.lastData.longitude + " / " + Input.location.lastData.altitude
@@ -64,13 +73,28 @@ public class CheckLocation : MonoBehaviour {
             
             if (PhotonNetwork.isMasterClient)
             {
+                //check speed of host to be sure that host is in a car
+                CheckSpeed();
+                //set position of host
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
             }
+            //if this user in not the host
             else
             {
-                myLon = Input.location.lastData.longitude;
-                myLat = Input.location.lastData.latitude;
+                //if the player is in a room with a host
+                if (PhotonNetwork.inRoom)
+                {
+                    //check range, increment timer if not in range
+                    TimeInRange();
+                    //update your position
+                    myLon = Input.location.lastData.longitude;
+                    myLat = Input.location.lastData.latitude;
+                    //check distance to host
+                    CompareLocation();
+                }
+
+
             }
         }
     }
@@ -79,22 +103,56 @@ public class CheckLocation : MonoBehaviour {
     {
         Input.location.Stop();
     }
-    /*
-    //returns latitude and longitude of player
-    public ArrayList GetPosition()
+   
+    public void TimeInRange()
     {
-        float lat = Input.location.lastData.latitude;
-        float lon = Input.location.lastData.longitude;
+        //if player is out of range of host, increment timer
+        if (inRange == false)
+        {
+            distanceTimer += Time.deltaTime;
+            //if the timer is greater than the max time out of range
+            if (distanceTimer > timeToKick)
+            {
+                Debug.Log("You have been removed from room for leaving car");
+                PhotonNetwork.LeaveRoom();
+            }
+        }
+        //if they are in range, reset timer
+        else
+        {
+            distanceTimer = 0;
+        }
        
-        ArrayList position = new ArrayList();
-        position.Add(lat);
-        position.Add(lon);
-        return position;
+       
     }
-    */
-    public bool CompareLocation()
+    public void CompareLocation()
     {
         if(PhotonNetwork.isMasterClient)
+        {
+            Debug.Log("No need to compare master position to itself");
+            inRange = true;
+            return;
+        }
+        //how far off a distance can be before a player is dropped
+        float variance = 0.0001f;
+        float lonDiff = masterLon - myLon;
+        float latDiff = masterLat - myLat;
+        if(lonDiff > variance || lonDiff < -variance || latDiff > variance || latDiff<-variance )
+        {
+            inRange = false;
+            return;
+        }
+        else
+        {
+            inRange = true;
+            return;
+        }
+
+        
+    }
+    public bool CompareLocationOnJoin()
+    {
+        if (PhotonNetwork.isMasterClient)
         {
             Debug.Log("No need to compare master position to itself");
             return true;
@@ -103,7 +161,7 @@ public class CheckLocation : MonoBehaviour {
         float variance = 0.0001f;
         float lonDiff = masterLon - myLon;
         float latDiff = masterLat - myLat;
-        if(lonDiff > variance || lonDiff < -variance || latDiff > variance || latDiff<-variance )
+        if (lonDiff > variance || lonDiff < -variance || latDiff > variance || latDiff < -variance)
         {
             return false;
         }
@@ -111,8 +169,6 @@ public class CheckLocation : MonoBehaviour {
         {
             return true;
         }
-
-        
     }
     //checks to see if host is in a car by comparing location over a period of time
     public bool CheckSpeed()

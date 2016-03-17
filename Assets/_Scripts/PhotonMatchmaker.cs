@@ -44,7 +44,7 @@ public class PhotonMatchmaker : PunBehaviour
         if (!PhotonNetwork.isMasterClient)
         {
             //check if joining player is near host
-            if (locationHandler.GetComponent<CheckLocation>().CompareLocation())
+            if (locationHandler.GetComponent<CheckLocation>().CompareLocationOnJoin())
             {
                 Debug.Log("You are near host, join is complete");
                 debugText.text = "You are near host, join is complete";
@@ -77,6 +77,7 @@ public class PhotonMatchmaker : PunBehaviour
 
     }
    
+
 
 
 
