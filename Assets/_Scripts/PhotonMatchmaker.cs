@@ -38,7 +38,9 @@ public class PhotonMatchmaker : PunBehaviour
         //PlayFabUserLogin.playfabUserLogin.Authentication("SUCCESS!", 2); //change the text of authentication text
         Debug.Log("Join Room Successfully!");
         Debug.Log("Room name is: "+PhotonNetwork.room);
-        debugText.text = "Join Room Successfully! Room name is: " + PhotonNetwork.room;
+        debugText.text = "Join Room Successfully! Room name is: " + PhotonNetwork.room
+            +"\n Current longitude = "+ locationHandler.GetComponent<CheckLocation>().myLon 
+            +"\n Current latitude = " + locationHandler.GetComponent<CheckLocation>().myLat;
 
         //if you are not the host
         if (!PhotonNetwork.isMasterClient)
@@ -57,6 +59,7 @@ public class PhotonMatchmaker : PunBehaviour
                 PhotonNetwork.LeaveRoom();
             }
         }
+        
 
 
 
@@ -75,6 +78,13 @@ public class PhotonMatchmaker : PunBehaviour
         //GameObject player = PhotonNetwork.Instantiate("PlayerCharacter", spawnPoint.position, Quaternion.identity, 0);
         //player.GetComponent<PlayerCombatManager>().enabled = true;
 
+    }
+    void OnPlayerJoinedRoom()
+    {
+        if(PhotonNetwork.isMasterClient)
+        {
+            debugText.text = "New player joined room "+ PhotonNetwork.room;
+        }
     }
    
 
