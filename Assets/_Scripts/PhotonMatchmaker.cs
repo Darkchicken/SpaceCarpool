@@ -5,7 +5,7 @@ using Photon;
 using UnityEngine.UI;
 public class PhotonMatchmaker : PunBehaviour
 {
-    public GameObject gameManager;
+    public GameObject locationHandler;
     //public Transform spawnPoint;
     //public Transform enemySpawnPoint;
     public Text debugText;
@@ -44,7 +44,7 @@ public class PhotonMatchmaker : PunBehaviour
         if (!PhotonNetwork.isMasterClient)
         {
             //check if joining player is near host
-            if (gameManager.GetComponent<CheckLocation>().CompareLocation())
+            if (locationHandler.GetComponent<CheckLocation>().CompareLocation())
             {
                 Debug.Log("You are near host, join is complete");
                 debugText.text = "You are near host, join is complete";

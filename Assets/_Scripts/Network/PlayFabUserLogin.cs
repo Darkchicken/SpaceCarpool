@@ -7,7 +7,10 @@ using PlayFab.ClientModels;
 
 public class PlayFabUserLogin : MonoBehaviour
 {
-   
+
+    public GameObject locationHandler;
+
+
     public InputField loginUsernameField;
     public InputField loginPasswordField;
     public Text errorText;
@@ -41,6 +44,12 @@ public class PlayFabUserLogin : MonoBehaviour
 
     public void Host()
     {
+        //if the player is already in a room, prevent hosting
+        if(PhotonNetwork.inRoom || !PhotonNetwork.insideLobby)
+        {
+            debugText.text = "Cannot create room, either already in a room or not in lobby";
+            return;
+        }
         debugText.text = "Creating room: " + PlayFabDataStore.userName;
         //Debug.Log("Created Room: "+ PhotonNetwork.room.name);
         //create a room with same name as host
