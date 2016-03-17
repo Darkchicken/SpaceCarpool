@@ -43,6 +43,16 @@ public class PlayFabUserLogin : MonoBehaviour
     {
         debugText.text = "Creating room: " + PlayFabDataStore.userName;
         //Debug.Log("Created Room: "+ PhotonNetwork.room.name);
+        //create a room with same name as host
+        if(PhotonNetwork.CreateRoom(PlayFabDataStore.userName))
+        {
+            debugText.text = "Room with name: "+PhotonNetwork.room+" created!";
+           
+        }
+        else
+        {
+            debugText.text = "Failed to create room";
+        }
     }
     public void Join()
     {

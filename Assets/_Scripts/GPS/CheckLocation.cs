@@ -61,7 +61,7 @@ public class CheckLocation : MonoBehaviour {
             //debugText.text = ("Location (lat/long/alt): " + Input.location.lastData.latitude + " / " + Input.location.lastData.longitude + " / " + Input.location.lastData.altitude
              //  + " ----Horizontal accurancy/ timestamp: " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp);
             //print("Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp);
-
+            
             if (PhotonNetwork.isMasterClient)
             {
                 masterLon = myLon = Input.location.lastData.longitude;
@@ -113,6 +113,20 @@ public class CheckLocation : MonoBehaviour {
         }
 
         
+    }
+    //checks to see if host is in a car by comparing location over a period of time
+    public bool CheckSpeed()
+    {
+        if (!PhotonNetwork.isMasterClient)
+        {
+            Debug.Log("Only the host should be checked for speed");
+            return true;
+        }
+        //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
+        //return true if in a car, return false if not
+
+
+        return false;
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
