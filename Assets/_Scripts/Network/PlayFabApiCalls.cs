@@ -100,5 +100,45 @@ public class PlayFabApiCalls : MonoBehaviour {
             Debug.Log("Photon Connection Failed! " + error.ErrorMessage.ToString()); 
         });
     }
-    
+
+    public static void UpdateUserLocation(Dictionary<string, string> data)
+    {
+        var request = new UpdateUserDataRequest()
+        {
+            Data = data,
+            Permission = UserDataPermission.Public
+        };
+        PlayFabClientAPI.UpdateUserData(request, (result) =>
+        {
+            Debug.Log("User Data Updated");
+        },
+        (error) =>
+        {
+            Debug.Log("User Data Can't Updated");
+            Debug.Log(error.ErrorMessage);
+            Debug.Log(error.ErrorDetails);
+        });
+    }
+
+    //Gets specific user's room name
+    public static void GetUserLocation(string playFabId)
+    {
+        var request = new GetUserDataRequest()
+        {
+            PlayFabId = playFabId
+        };
+        PlayFabClientAPI.GetUserData(request, (result) =>
+        {
+            string[] location = result.Data["QuestLog"].Value.Split('#');
+            PlayFabDataStore.masterClientLatitude = float.Parse(location[0]);
+            PlayFabDataStore.masterClientLongitude = float.Parse(location[1]);
+        },
+        (error) =>
+        {
+            Debug.Log("Can't get Location");
+            Debug.Log(error.ErrorMessage);
+            Debug.Log(error.ErrorDetails);
+        });
+    }
+
 }

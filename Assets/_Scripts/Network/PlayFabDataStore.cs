@@ -10,5 +10,17 @@ public class PlayFabDataStore : MonoBehaviour
     public static string sessionTicket;
     public static string playFabId;
     public static string userName;
+    public static string masterClientUserName;
+    public static string masterClientPlayFabId;
+    public static float masterClientLatitude;
+    public static float masterClientLongitude;
+    
+    /*
+    Dictionary<string, string> customData = new Dictionary<string, string>(); //create a dictionary for the data
+    customData.Add("Location", locationString); //locationString has to be this way: Latitude#Longtitude
+    PlayFabApiCalls.UpdateUserLocation(customData); // then call this function and send the dictionary
+
+    */
+    
    
 }
