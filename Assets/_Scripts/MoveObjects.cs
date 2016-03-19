@@ -14,7 +14,7 @@ public class MoveObjects : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         cameraTransform = Camera.main.transform;
         startTime = Time.deltaTime;
-        endPosition = new Vector3(cameraTransform.position.x, cameraTransform.position.y, cameraTransform.position.z - 2000);
+        endPosition = new Vector3(cameraTransform.position.x, cameraTransform.position.y, cameraTransform.position.z - 500);
     }
 
 	void FixedUpdate ()
