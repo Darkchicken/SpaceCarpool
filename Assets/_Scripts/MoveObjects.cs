@@ -3,23 +3,29 @@ using System.Collections;
 
 public class MoveObjects : MonoBehaviour {
 
-    
-    private Transform cameraTransform;
+    public float speed;
+    private BoxCollider destinationArea;
+    private Rigidbody objectRigidBody;
     private float startTime;
-    private Rigidbody rb;
+    private Vector3 colliderSize;
     private Vector3 endPosition;
+    private Vector3 direction;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        cameraTransform = Camera.main.transform;
         startTime = Time.deltaTime;
-        endPosition = new Vector3(cameraTransform.position.x, cameraTransform.position.y, cameraTransform.position.z - 500);
+        objectRigidBody = GetComponent<Rigidbody>();
+        destinationArea = GameManager.gameManager.destinationArea;
+        colliderSize = destinationArea.GetComponent<BoxCollider>().size;
+        endPosition = new Vector3(Random.Range(destinationArea.transform.position.x - destinationArea.size.x / 2, destinationArea.transform.position.x + destinationArea.size.x / 2),
+            Random.Range(destinationArea.transform.position.y - destinationArea.size.y / 2, destinationArea.transform.position.y + destinationArea.size.y / 2), destinationArea.transform.position.z);
+        direction = (endPosition - transform.position).normalized;
     }
 
 	void FixedUpdate ()
     {
-        transform.position = Vector3.Lerp(transform.position, endPosition, (Time.time - startTime) / 10000);
-	}
+        objectRigidBody.MovePosition(transform.position + direction * speed * Time.deltaTime);
+
+    }
 	
 }
