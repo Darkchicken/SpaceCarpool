@@ -120,7 +120,7 @@ public class PlayFabApiCalls : MonoBehaviour {
         });
     }
 
-    //Gets specific user's room name
+    //Gets specific user's Location
     public static void GetUserLocation(string playFabId)
     {
         var request = new GetUserDataRequest()
@@ -129,7 +129,7 @@ public class PlayFabApiCalls : MonoBehaviour {
         };
         PlayFabClientAPI.GetUserData(request, (result) =>
         {
-            string[] location = result.Data["QuestLog"].Value.Split('#');
+            string[] location = result.Data["Location"].Value.Split('#');
             PlayFabDataStore.masterClientLatitude = float.Parse(location[0]);
             PlayFabDataStore.masterClientLongitude = float.Parse(location[1]);
         },
