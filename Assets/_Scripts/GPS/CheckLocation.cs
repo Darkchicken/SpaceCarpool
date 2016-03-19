@@ -82,14 +82,15 @@ public class CheckLocation : MonoBehaviour {
             //if this user in not the host
             else
             {
+                //update your position
+                myLon = Input.location.lastData.longitude;
+                myLat = Input.location.lastData.latitude;
                 //if the player is in a room with a host
                 if (PhotonNetwork.inRoom)
                 {
                     //check range, increment timer if not in range
                     TimeInRange();
-                    //update your position
-                    myLon = Input.location.lastData.longitude;
-                    myLat = Input.location.lastData.latitude;
+                   
                     //check distance to host
                     CompareLocation();
                 }
