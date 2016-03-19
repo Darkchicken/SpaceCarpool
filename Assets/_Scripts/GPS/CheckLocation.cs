@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CheckLocation : MonoBehaviour {
 
 
     public Text debugText;
     bool updatePosition = false;
-
+    //distance a player can be from host before being out of range
+    float variance = 0.001f;
+    //timer to check how long player has been out of range
     float distanceTimer = 0;
     //player will be kicked if out of range for 30 sec
     float timeToKick = 30f;
@@ -78,6 +81,8 @@ public class CheckLocation : MonoBehaviour {
                 //set position of host
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
+                //Host is always in range of themself
+                inRange = true;
             }
             //if this user in not the host
             else
@@ -97,6 +102,18 @@ public class CheckLocation : MonoBehaviour {
 
 
             }
+            ///FOR TESTING PURPOSES ONLY////////////////////////////////////
+            if (SceneManager.GetActiveScene().name == "TestGPS")
+            {
+                debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
+                  + "\n timestamp: " + Input.location.lastData.timestamp
+                  + "\n Master (lat/long): " + masterLat + " / " + masterLon
+                  + "\n In range? -> " + inRange
+                  + "\n Time out of range: " + distanceTimer
+                  + "\n distance = " + GetDistance());
+                 
+            }
+            ////////////////////////////////////////////////////////////////       
         }
     }
 
@@ -104,7 +121,12 @@ public class CheckLocation : MonoBehaviour {
     {
         Input.location.Stop();
     }
-   
+    public float GetDistance()
+    {
+        //calculates distance between host and guest with longitude and latitude using distance formula
+        return Mathf.Sqrt(Mathf.Pow((masterLon-myLon),2)+Mathf.Pow((masterLat-myLat),2));
+    }
+
     public void TimeInRange()
     {
         //if player is out of range of host, increment timer
@@ -114,6 +136,7 @@ public class CheckLocation : MonoBehaviour {
             //if the timer is greater than the max time out of range
             if (distanceTimer > timeToKick)
             {
+                debugText.text = ("You have been removed from room for leaving car");
                 Debug.Log("You have been removed from room for leaving car");
                 PhotonNetwork.LeaveRoom();
             }
@@ -128,28 +151,23 @@ public class CheckLocation : MonoBehaviour {
     }
     public void CompareLocation()
     {
-        if(PhotonNetwork.isMasterClient)
+        if (PhotonNetwork.isMasterClient)
         {
             Debug.Log("No need to compare master position to itself");
             inRange = true;
-            return;
-        }
-        //how far off a distance can be before a player is dropped
-        float variance = 0.0001f;
-        float lonDiff = masterLon - myLon;
-        float latDiff = masterLat - myLat;
-        if(lonDiff > variance || lonDiff < -variance || latDiff > variance || latDiff<-variance )
-        {
-            inRange = false;
-            return;
         }
         else
         {
-            inRange = true;
-            return;
-        }
-
-        
+           
+            if(GetDistance() > variance)
+            {
+                inRange = false;
+            }
+            else
+            {
+                inRange = true;
+            }
+        }  
     }
     public bool CompareLocationOnJoin()
     {
@@ -158,11 +176,7 @@ public class CheckLocation : MonoBehaviour {
             Debug.Log("No need to compare master position to itself");
             return true;
         }
-        //how far off a distance can be before a player is dropped
-        float variance = 0.0001f;
-        float lonDiff = masterLon - myLon;
-        float latDiff = masterLat - myLat;
-        if (lonDiff > variance || lonDiff < -variance || latDiff > variance || latDiff < -variance)
+        if (GetDistance() > variance)
         {
             return false;
         }
@@ -170,6 +184,7 @@ public class CheckLocation : MonoBehaviour {
         {
             return true;
         }
+
     }
     //checks to see if host is in a car by comparing location over a period of time
     public bool CheckSpeed()
