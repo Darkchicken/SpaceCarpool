@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CheckLocation : MonoBehaviour {
 
-
+    static string masterPlayfabId;
     public Text debugText;
     bool updatePosition = false;
     //distance a player can be from host before being out of range
@@ -16,6 +17,9 @@ public class CheckLocation : MonoBehaviour {
     float timeToKick = 30f;
     //checks if player is currently in range of host
     bool inRange;
+    //last timestamp
+    double lastUpdate;
+
 
     public float myLon;
     public float myLat;
@@ -60,7 +64,7 @@ public class CheckLocation : MonoBehaviour {
             updatePosition = true;
 
         }
-
+ 
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
     }
@@ -81,6 +85,7 @@ public class CheckLocation : MonoBehaviour {
                 //set position of host
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
+                lastUpdate = Input.location.lastData.timestamp;
                 //Host is always in range of themself
                 inRange = true;
             }
@@ -110,8 +115,9 @@ public class CheckLocation : MonoBehaviour {
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon
                   + "\n In range? -> " + inRange
                   + "\n Time out of range: " + distanceTimer
-                  + "\n distance = " + GetDistance());
-                 
+                  + "\n distance = " + GetDistance()
+                  + "\n speed = " + CheckSpeed());
+
             }
             ////////////////////////////////////////////////////////////////       
         }
@@ -125,6 +131,18 @@ public class CheckLocation : MonoBehaviour {
     {
         //calculates distance between host and guest with longitude and latitude using distance formula
         return Mathf.Sqrt(Mathf.Pow((masterLon-myLon),2)+Mathf.Pow((masterLat-myLat),2));
+    }
+    //checks to see if host is in a car by comparing location over a period of time
+    public double CheckSpeed()
+    {
+        if(!PhotonNetwork.isMasterClient)
+        { return 0; }
+        //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
+        //return true if in a car, return false if not
+        double distance = Mathf.Sqrt(Mathf.Pow((myLon- Input.location.lastData.longitude), 2) + Mathf.Pow((myLat- Input.location.lastData.latitude), 2));
+        double time = Input.location.lastData.timestamp-lastUpdate;
+        return (distance / time);
+
     }
 
     public void TimeInRange()
@@ -186,20 +204,28 @@ public class CheckLocation : MonoBehaviour {
         }
 
     }
-    //checks to see if host is in a car by comparing location over a period of time
-    public bool CheckSpeed()
+    public void StoreMasterData()
+    {
+        if (PhotonNetwork.isMasterClient)
+        {
+            Dictionary<string, string> customData = new Dictionary<string, string>(); //create a dictionary for the data
+            string locationString = masterLat + "#" + masterLon;
+            customData.Add("Location", locationString); //locationString has to be this way: Latitude#Longtitude
+            PlayFabApiCalls.UpdateUserLocation(customData); // then call this function and send the dictionary
+        }
+    }
+    //this puts the value from playfab into the variables in game
+    public void UpdateMasterData()
     {
         if (!PhotonNetwork.isMasterClient)
         {
-            Debug.Log("Only the host should be checked for speed");
-            return true;
+            if (masterPlayfabId != null)
+            {
+                PlayFabApiCalls.GetUserLocation(masterPlayfabId); // then call this function and send the dictionary
+            }
         }
-        //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
-        //return true if in a car, return false if not
-
-
-        return false;
     }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)

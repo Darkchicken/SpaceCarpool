@@ -62,6 +62,10 @@ public class PhotonMatchmaker : PunBehaviour
                 PhotonNetwork.LeaveRoom();
             }
         }
+        else//if you are the host
+        {
+            locationHandler.GetComponent<CheckLocation>().StoreMasterData();
+        }
         
 
 
