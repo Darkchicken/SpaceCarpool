@@ -21,8 +21,9 @@ public class Asteroid : MonoBehaviour
         
     }
 
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
+        Debug.Log("Asteroid Took Damage!");
         if(health - damage > 0)
         {
             health -= damage;
