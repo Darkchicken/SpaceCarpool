@@ -18,8 +18,8 @@ public class CheckLocation : MonoBehaviour {
     //checks if player is currently in range of host
     bool inRange;
     //last timestamp
-    double lastUpdate;
-
+    double lastUpdate = 0;
+    PhotonView photonView;
 
     public float myLon;
     public float myLat;
@@ -64,7 +64,7 @@ public class CheckLocation : MonoBehaviour {
             updatePosition = true;
 
         }
- 
+        photonView = GetComponent<PhotonView>();
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
     }
@@ -86,6 +86,7 @@ public class CheckLocation : MonoBehaviour {
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
                 lastUpdate = Input.location.lastData.timestamp;
+                photonView.RPC("UpdateMaster", PhotonTargets.Others, myLon, myLat);
                 //Host is always in range of themself
                 inRange = true;
             }
@@ -116,7 +117,8 @@ public class CheckLocation : MonoBehaviour {
                   + "\n In range? -> " + inRange
                   + "\n Time out of range: " + distanceTimer
                   + "\n distance = " + GetDistance()
-                  + "\n speed = " + CheckSpeed());
+                  + "\n speed = " + CheckSpeed()
+                   + "\n ID = " + photonView);
 
             }
             ////////////////////////////////////////////////////////////////       
@@ -204,6 +206,7 @@ public class CheckLocation : MonoBehaviour {
         }
 
     }
+    /*
     public void StoreMasterData()
     {
         if (PhotonNetwork.isMasterClient)
@@ -225,7 +228,7 @@ public class CheckLocation : MonoBehaviour {
             }
         }
     }
-
+    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -244,5 +247,15 @@ public class CheckLocation : MonoBehaviour {
             masterLat = (float)stream.ReceiveNext();
         }
     }
-   
+    */
+    [PunRPC]
+    void UpdateMaster(float lon, float lat)
+    {
+        masterLon = lon;
+        masterLat = lat;
+        debugText.text = ("Received Update from Master"
+            +"\n MasterLon = "+masterLon
+            +"\n MasterLat = " +masterLat);
+    }
+
 }
