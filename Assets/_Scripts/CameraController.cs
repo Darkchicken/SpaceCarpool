@@ -3,12 +3,14 @@ using System.Collections;
 
 //attach this script to the camera to rotate the camera angle based on the accelerometer
 public class CameraController : MonoBehaviour {
+	
+	public int speed;
+	public Camera camera;
 
 	void Update () {
-		//camera rotating side to side 
-		transform.Rotate (0, Input.acceleration.x, 0);
-
-		//Uncomment the following line for possible up/down and left/right movement
-		//transform.Rotate (-Input.acceleration.y / 2, Input.acceleration.x, 0);
+		// up/down and left/right movement
+		// change where acc.y = 0, control about 20 degrees of movement
+		transform.Rotate (Input.acceleration.y * Time.deltaTime * speed, Input.acceleration.x * Time.deltaTime * speed, 0);
+        camera.transform.rotation = Quaternion.Lerp(camera.transform.rotation, transform.rotation, speed * Time.deltaTime);
 	}
 }
