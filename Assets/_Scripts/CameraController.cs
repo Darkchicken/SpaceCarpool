@@ -5,12 +5,56 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 	
 	public int speed;
-	public Camera camera;
+	public Camera playerCamera;
 
-	void Update () {
+    void Start()
+    {
+        Input.compensateSensors = true;
+        Input.gyro.enabled = true;
+    }
+
+    void FixedUpdate()
+    {
+        transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, Input.gyro.rotationRateUnbiased.z);
+        playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
+    }
+    void Update () {
+
+        /*
+        Debug.Log(Input.acceleration);
 		// up/down and left/right movement
 		// change where acc.y = 0, control about 20 degrees of movement
-		transform.Rotate (Input.acceleration.y * Time.deltaTime * speed, Input.acceleration.x * Time.deltaTime * speed, 0);
-        camera.transform.rotation = Quaternion.Lerp(camera.transform.rotation, transform.rotation, speed * Time.deltaTime);
-	}
+		//transform.Rotate (Input.acceleration.y * Time.deltaTime * speed, Input.acceleration.x * Time.deltaTime * speed, 0);
+        //
+
+        float xMovement = 0;
+        float yMovement = 0;
+        ///additional code by josh
+        
+        if (Input.acceleration.x > 0.3) 
+        {
+            //1 is for input direction
+           xMovement = 1 * speed * Time.deltaTime;
+        }
+        if(Input.acceleration.x < -0.3)
+        {
+            xMovement = -1 * speed * Time.deltaTime;
+        }
+        
+        if (Input.acceleration.y < 0)
+        {
+            //1 is for input direction
+            yMovement = 1 * speed * Time.deltaTime;
+        }
+        if (Input.acceleration.y < -0.9)
+        {
+            yMovement = 1 * speed * Time.deltaTime;
+        }
+        
+        //float xMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        //float yMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        transform.Rotate(yMovement, xMovement, 0);
+        playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
+        */
+    }
 }
