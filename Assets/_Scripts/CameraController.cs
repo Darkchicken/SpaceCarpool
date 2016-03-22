@@ -4,11 +4,14 @@ using System.Collections;
 //attach this script to the camera to rotate the camera angle based on the accelerometer
 public class CameraController : MonoBehaviour {
 	
+
 	public int speed;
 	public Camera playerCamera;
 
     void Start()
     {
+        playerCamera = Camera.main;
+        playerCamera.gameObject.transform.position = transform.position;
         Input.compensateSensors = true;
         Input.gyro.enabled = true;
     }

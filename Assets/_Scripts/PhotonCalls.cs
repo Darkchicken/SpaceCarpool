@@ -49,12 +49,7 @@ public class PhotonCalls : PunBehaviour
         }
         */
     }
-    //THIS DOESNT WORK
-    void OnPhotonJoinFailed()
-    {
-        Debug.Log("Cannot join room, room name does not exist");
-        debugText.text = "Cannot join room, room name does not exist";
-    }
+   
     //if the player fails to join a random room
     void OnPhotonRandomJoinFailed()
     {
@@ -68,18 +63,18 @@ public class PhotonCalls : PunBehaviour
     //upon joining a new room, output the room name
     public override void OnJoinedRoom()
     {
-        
+        Debug.Log("At Least this works!");
         //reset to false for next check
-        /*
-        PlayFabDataStore.friendsCurrentRoomName = null;
+        
+       //PlayFabDataStore.friendsCurrentRoomName = null;
         spawnPoint = GameObject.Find("SpawnPoint");
-        Debug.Log("Join Room Successfully!");
-        Debug.Log("Room name is: " + PhotonNetwork.room);
+        //Debug.Log("Join Room Successfully!");
+        //Debug.Log("Room name is: " + PhotonNetwork.room);
 
-        GameObject player = PhotonNetwork.Instantiate("Elf", spawnPoint.transform.position, Quaternion.identity, 0);
-        player.GetComponent<PlayerCombatManager>().enabled = true;
-        player.GetComponent<Runes>().enabled = true;
-        */
+        GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
+        //player.GetComponent<PlayerCombatManager>().enabled = true;
+        //player.GetComponent<Runes>().enabled = true;
+        
         //set entering player to full health. This is now dealed someplace else
         //player.GetComponent<Health>().health = player.GetComponent<Health>().maxHealth;
 

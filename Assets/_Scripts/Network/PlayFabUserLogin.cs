@@ -89,7 +89,7 @@ public class PlayFabUserLogin : MonoBehaviour
         {
             Debug.Log("Starting Game");
             debugText.text = "Starting game in room named: "+ PhotonNetwork.room.name;
-            PhotonNetwork.LoadLevel("TestGPS");
+            PhotonNetwork.LoadLevel("TestSpawning");
         }
         else
         {
