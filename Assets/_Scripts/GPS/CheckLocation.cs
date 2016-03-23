@@ -25,6 +25,14 @@ public class CheckLocation : MonoBehaviour {
     public float myLat;
     public float masterLon;
     public float masterLat;
+
+    void Awake()
+    {
+        if(GameObject.Find("DebugText") != null)
+        { 
+         debugText = GameObject.Find("DebugText").GetComponent<Text>();
+        }
+    }
     IEnumerator Start()
     {
         // First, check if user has location service enabled
@@ -109,8 +117,9 @@ public class CheckLocation : MonoBehaviour {
 
             }
             ///FOR TESTING PURPOSES ONLY////////////////////////////////////
-            if (SceneManager.GetActiveScene().name == "TestGPS")
+            if (SceneManager.GetActiveScene().name == "TestGPS" || SceneManager.GetActiveScene().name == "TestSpawning")
             {
+                
                 debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
                   + "\n timestamp: " + Input.location.lastData.timestamp
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon
@@ -118,7 +127,7 @@ public class CheckLocation : MonoBehaviour {
                   + "\n Time out of range: " + distanceTimer
                   + "\n distance = " + GetDistance()
                   + "\n speed = " + CheckSpeed()
-                   + "\n ID = " + photonView);
+                   + "\n Master? = " + PhotonNetwork.isMasterClient);
 
             }
             ////////////////////////////////////////////////////////////////       
