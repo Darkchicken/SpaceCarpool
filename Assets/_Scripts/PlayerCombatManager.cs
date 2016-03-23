@@ -25,7 +25,8 @@ public class PlayerCombatManager : MonoBehaviour {
                     if (Input.GetMouseButtonDown(0)/*Input.GetButton("Shoot")*/ && Time.time > nextFire)   //define "Shoot" button when we get tap to shootand remove mouseButton
                     {
                         nextFire = Time.time + fireRate;                    //attack speed of weapon
-                        hit.transform.gameObject.GetComponent<Asteroid>().TakeDamage(500);
+                        //hit.transform.gameObject.GetComponent<Asteroid>().TakeDamage(500);
+                        hit.transform.gameObject.GetComponent<PhotonView>().RPC("gethit", PhotonTargets.MasterClient, 500);
                     }
                 }
                     

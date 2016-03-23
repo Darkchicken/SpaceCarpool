@@ -3,7 +3,9 @@ using System.Collections;
 
 //attach this script to the camera to rotate the camera angle based on the accelerometer
 public class CameraController : MonoBehaviour {
-	
+
+    Vector3 initialPosition;
+    Quaternion initialRotation;
 
 	public int speed;
 	public Camera playerCamera;
@@ -12,12 +14,19 @@ public class CameraController : MonoBehaviour {
     {
         playerCamera = Camera.main;
         playerCamera.gameObject.transform.position = transform.position;
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
         Input.compensateSensors = true;
         Input.gyro.enabled = true;
     }
 
     void FixedUpdate()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            transform.position = initialPosition;
+            transform.rotation = initialRotation;
+        }
         transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, Input.gyro.rotationRateUnbiased.z);
         playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
     }

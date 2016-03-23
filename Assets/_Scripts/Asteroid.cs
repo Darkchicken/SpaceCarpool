@@ -20,7 +20,7 @@ public class Asteroid : MonoBehaviour
         health = (int)(100 * asteroidScale * 3);
         
     }
-
+    /*
     public void TakeDamage(int damage)
     {
         Debug.Log("Asteroid Took Damage!");
@@ -34,12 +34,31 @@ public class Asteroid : MonoBehaviour
         }
         
     }
-
+    */
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Destination")
+        if (other.tag == "Destination" && PhotonNetwork.isMasterClient)
         {
-            Destroy(gameObject);
+
+            PhotonNetwork.Destroy(gameObject);
+        }
+    }
+
+    [PunRPC]
+    public void TakeDamage(int getDamage)
+    {
+        if (PhotonNetwork.isMasterClient)
+        {
+            Debug.Log("Asteroid Took Damage!");
+            if (health - getDamage > 0)
+            {
+                health -= getDamage;
+            }
+            else
+            { 
+
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
     }
 
