@@ -11,6 +11,11 @@ public class PhotonCalls : PunBehaviour
     public Text debugText;
     // static string friendRoomName = null; // get this directly from playfabdatastore
 
+    void Awake()
+    {
+        spawnPoint = GameObject.Find("SpawnPoint");
+        GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
+    }
     public static void NewRoom()
     {
 
@@ -60,6 +65,7 @@ public class PhotonCalls : PunBehaviour
 
        
     }
+    /*
     //upon joining a new room, output the room name
     public override void OnJoinedRoom()
     {
@@ -67,7 +73,7 @@ public class PhotonCalls : PunBehaviour
         //reset to false for next check
         
        //PlayFabDataStore.friendsCurrentRoomName = null;
-        spawnPoint = GameObject.Find("SpawnPoint");
+        
         //Debug.Log("Join Room Successfully!");
         //Debug.Log("Room name is: " + PhotonNetwork.room);
 
@@ -80,7 +86,7 @@ public class PhotonCalls : PunBehaviour
 
 
     }
-
+    */
 
 }
 

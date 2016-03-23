@@ -95,6 +95,8 @@ public class PlayFabApiCalls : MonoBehaviour {
             PhotonNetwork.AuthValues.AddAuthParameter("Token", result.PhotonCustomAuthenticationToken);
             PhotonNetwork.AuthValues.UserId = PlayFabDataStore.playFabId;
             PhotonNetwork.ConnectUsingSettings("1.0");
+            //make sure all players are synced to same scene in same room
+            PhotonNetwork.automaticallySyncScene = true;
         }, (error) =>
         {
             Debug.Log("Photon Connection Failed! " + error.ErrorMessage.ToString()); 
