@@ -26,7 +26,7 @@ public class PlayerCombatManager : MonoBehaviour {
                     {
                         nextFire = Time.time + fireRate;                    //attack speed of weapon
                         //hit.transform.gameObject.GetComponent<Asteroid>().TakeDamage(500);
-                        hit.transform.gameObject.GetComponent<PhotonView>().RPC("gethit", PhotonTargets.MasterClient, 500);
+                        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
                     }
                 }
                     
