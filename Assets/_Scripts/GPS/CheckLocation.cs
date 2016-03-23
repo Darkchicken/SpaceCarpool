@@ -26,6 +26,8 @@ public class CheckLocation : MonoBehaviour {
     public float masterLon;
     public float masterLat;
 
+    bool updating = false;
+
     void Awake()
     {
         if(GameObject.Find("DebugText") != null)
@@ -73,6 +75,7 @@ public class CheckLocation : MonoBehaviour {
 
         }
         photonView = GetComponent<PhotonView>();
+       
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
     }
@@ -82,6 +85,11 @@ public class CheckLocation : MonoBehaviour {
        
         if (updatePosition == true)
         {
+            if(updating == false)
+            {
+                InvokeRepeating("UpdateMasterPos", 1, 3);
+                updating = true;
+            }
             //debugText.text = ("Location (lat/long/alt): " + Input.location.lastData.latitude + " / " + Input.location.lastData.longitude + " / " + Input.location.lastData.altitude
              //  + " ----Horizontal accurancy/ timestamp: " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp);
             //print("Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp);
@@ -94,7 +102,7 @@ public class CheckLocation : MonoBehaviour {
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
                 lastUpdate = Input.location.lastData.timestamp;
-                photonView.RPC("UpdateMaster", PhotonTargets.Others, myLon, myLat);
+              
                 //Host is always in range of themself
                 inRange = true;
             }
@@ -178,6 +186,10 @@ public class CheckLocation : MonoBehaviour {
        
        
     }
+    public void UpdateMasterPos()
+    {
+        photonView.RPC("UpdateMaster", PhotonTargets.All, myLon, myLat);
+    }
     public void CompareLocation()
     {
         if (PhotonNetwork.isMasterClient)
@@ -260,11 +272,14 @@ public class CheckLocation : MonoBehaviour {
     [PunRPC]
     public void UpdateMaster(float lon, float lat)
     {
-        masterLon = lon;
-        masterLat = lat;
-        debugText.text = ("Received Update from Master"
-            +"\n MasterLon = "+masterLon
-            +"\n MasterLat = " +masterLat);
+        if (photonView.isMine)
+        {
+            masterLon = lon;
+            masterLat = lat;
+            debugText.text = ("Received Update from Master"
+                + "\n MasterLon = " + masterLon
+                + "\n MasterLat = " + masterLat);
+        }
     }
 
 }
