@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using Photon;
+using UnityEngine.SceneManagement;
 
 public class PhotonCalls : PunBehaviour
 {
@@ -13,8 +14,20 @@ public class PhotonCalls : PunBehaviour
 
     void Awake()
     {
+        //spawnPoint = GameObject.Find("SpawnPoint");
+        //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
+ 
         spawnPoint = GameObject.Find("SpawnPoint");
+
+        //instantiate player on all clients
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
+        if(player.GetComponent<PhotonView>().isMine)
+        {
+            //enable scripts only for the controlling player
+            player.GetComponent<PlayerCombatManager>().enabled = true;
+            player.GetComponent<CameraController>().enabled = true;
+            player.GetComponent<CheckLocation>().enabled = true;
+        }
     }
     public static void NewRoom()
     {
@@ -42,17 +55,7 @@ public class PhotonCalls : PunBehaviour
     //upon reaching the lobby, join a random room 
     public override void OnJoinedLobby()
     {
-        /*
-        if (PlayFabDataStore.friendsCurrentRoomName != null)
-        {
-            PhotonNetwork.JoinRoom(PlayFabDataStore.friendsCurrentRoomName);
-        }
-        else
-        {
-            Debug.Log("Looking for room to join");
-            PhotonNetwork.JoinRandomRoom();
-        }
-        */
+        SceneManager.LoadScene("Login");
     }
    
     //if the player fails to join a random room
@@ -65,28 +68,27 @@ public class PhotonCalls : PunBehaviour
 
        
     }
-    /*
+    
     //upon joining a new room, output the room name
     public override void OnJoinedRoom()
     {
+        /*
         Debug.Log("At Least this works!");
-        //reset to false for next check
-        
-       //PlayFabDataStore.friendsCurrentRoomName = null;
-        
-        //Debug.Log("Join Room Successfully!");
-        //Debug.Log("Room name is: " + PhotonNetwork.room);
-
+       
+        spawnPoint = GameObject.Find("SpawnPoint");
+      
+        //instantiate player on all clients
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        //player.GetComponent<PlayerCombatManager>().enabled = true;
-        //player.GetComponent<Runes>().enabled = true;
-        
-        //set entering player to full health. This is now dealed someplace else
-        //player.GetComponent<Health>().health = player.GetComponent<Health>().maxHealth;
+        //enable scripts only for the controlling player
+        player.GetComponent<PlayerCombatManager>().enabled = true;
+        player.GetComponent<CameraController>().enabled = true;
+        player.GetComponent<CheckLocation>().enabled = true;
+        */
+
 
 
     }
-    */
+    
 
 }
 

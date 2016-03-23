@@ -258,7 +258,7 @@ public class CheckLocation : MonoBehaviour {
     }
     */
     [PunRPC]
-    void UpdateMaster(float lon, float lat)
+    public void UpdateMaster(float lon, float lat)
     {
         masterLon = lon;
         masterLat = lat;
