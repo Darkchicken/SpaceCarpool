@@ -34,8 +34,11 @@ public class Asteroid : MonoBehaviour
     }
     void Update()
     {
-        //transform.position = Vector3.Lerp(transform.position, objectPos, 0.1f);
-        //transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
+        if (!PhotonNetwork.isMasterClient)
+        {
+            transform.position = Vector3.Lerp(transform.position, objectPos, 0.1f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
+        }
     }
     /*
     public void TakeDamage(int damage)
@@ -89,25 +92,31 @@ public class Asteroid : MonoBehaviour
         GetComponent<MoveObjects>().speed = newSpeed;
         health = newHealth;
     }
-    /*
+    
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
-            //We own this player: send the others our data
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            if (PhotonNetwork.isMasterClient)
+            {
+                //We own this player: send the others our data
+                stream.SendNext(transform.position);
+                stream.SendNext(transform.rotation);
+            }
             
         }
         else
         {
-            //Network player, receive data
-            objectPos = (Vector3)stream.ReceiveNext();
-            objectRot = (Quaternion)stream.ReceiveNext();
+            if (!PhotonNetwork.isMasterClient)
+            {
+                //Network player, receive data
+                objectPos = (Vector3)stream.ReceiveNext();
+                objectRot = (Quaternion)stream.ReceiveNext();
+            }
             
 
         }
     }
-    */
+    
 
 }
