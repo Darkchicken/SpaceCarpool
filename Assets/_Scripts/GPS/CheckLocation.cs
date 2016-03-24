@@ -25,7 +25,7 @@ public class CheckLocation : MonoBehaviour {
     public float myLat;
     public float masterLon;
     public float masterLat;
-
+    double currentSpeed = 0;
     bool updating = false;
 
     void Awake()
@@ -44,7 +44,7 @@ public class CheckLocation : MonoBehaviour {
         }
 
         // Start service before querying location
-        Input.location.Start();
+        Input.location.Start(10,0);
 
         // Wait until service initializes
         int maxWait = 20;
@@ -75,7 +75,8 @@ public class CheckLocation : MonoBehaviour {
 
         }
         photonView = GetComponent<PhotonView>();
-       
+        //set initial value for last update
+        lastUpdate = Input.location.lastData.timestamp;
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
     }
@@ -97,11 +98,15 @@ public class CheckLocation : MonoBehaviour {
             if (PhotonNetwork.isMasterClient)
             {
                 //check speed of host to be sure that host is in a car
-                CheckSpeed();
+                if(lastUpdate != Input.location.lastData.timestamp)
+                {
+                    currentSpeed = CheckSpeed();
+                }
+                
                 //set position of host
                 masterLon = myLon = Input.location.lastData.longitude;
                 masterLat = myLat = Input.location.lastData.latitude;
-                lastUpdate = Input.location.lastData.timestamp;
+                
               
                 //Host is always in range of themself
                 inRange = true;
@@ -127,14 +132,15 @@ public class CheckLocation : MonoBehaviour {
             ///FOR TESTING PURPOSES ONLY////////////////////////////////////
             if (SceneManager.GetActiveScene().name == "TestGPS" || SceneManager.GetActiveScene().name == "TestSpawning")
             {
-                
+
                 debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
                   + "\n timestamp: " + Input.location.lastData.timestamp
+                  + "\n time since last update " + (Input.location.lastData.timestamp - lastUpdate)
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon
                   + "\n In range? -> " + inRange
                   + "\n Time out of range: " + distanceTimer
                   + "\n distance = " + GetDistance()
-                  + "\n speed = " + CheckSpeed()
+                  + "\n speed = " + currentSpeed
                    + "\n Master? = " + PhotonNetwork.isMasterClient);
 
             }
@@ -160,7 +166,9 @@ public class CheckLocation : MonoBehaviour {
         //return true if in a car, return false if not
         double distance = Mathf.Sqrt(Mathf.Pow((myLon- Input.location.lastData.longitude), 2) + Mathf.Pow((myLat- Input.location.lastData.latitude), 2));
         double time = Input.location.lastData.timestamp-lastUpdate;
-        return (distance / time);
+        double speed = (distance / time);
+        lastUpdate = Input.location.lastData.timestamp;
+        return speed;
 
     }
 
