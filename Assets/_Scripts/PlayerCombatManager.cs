@@ -6,13 +6,15 @@ public class PlayerCombatManager : MonoBehaviour {
     private RaycastHit hit;
   //  public LayerMask layerMask = ~(1 << 8);    //For use with layermask later on if we need it
 
-    public float fireRate = 0.5F;       //sets the attack speed value
-    private float nextFire = 0.0F;
+    public float fireRate = 0.5f;       //sets the attack speed value
+    private float nextFire = 0.0f;
 
     void Update()
     {
+        nextFire = Time.deltaTime;
+
         //Left Click attack to shoot asteroids
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
@@ -22,9 +24,9 @@ public class PlayerCombatManager : MonoBehaviour {
             {
                 if (hit.transform.tag == "Asteroid")
                 {
-                    if (Input.GetMouseButtonDown(0)/*Input.GetButton("Shoot")*/ && Time.time > nextFire)   //define "Shoot" button when we get tap to shootand remove mouseButton
+                    if (Input.GetMouseButtonDown(0) && nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
                     {
-                        nextFire = Time.time + fireRate;                    //attack speed of weapon
+                        //attack speed of weapon
                         //hit.transform.gameObject.GetComponent<Asteroid>().TakeDamage(500);
                         hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
                     }
