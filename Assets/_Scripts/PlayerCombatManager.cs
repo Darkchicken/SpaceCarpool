@@ -11,7 +11,7 @@ public class PlayerCombatManager : MonoBehaviour {
 
     void Update()
     {
-        nextFire = Time.deltaTime;
+        nextFire += Time.deltaTime;
 
         //Left Click attack to shoot asteroids
         if (Input.GetMouseButtonDown(0))
@@ -24,9 +24,10 @@ public class PlayerCombatManager : MonoBehaviour {
             {
                 if (hit.transform.tag == "Asteroid")
                 {
-                    if (Input.GetMouseButtonDown(0) && nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
+                    if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
                     {
                         nextFire = 0f;
+                        
                         //attack speed of weapon
                         //hit.transform.gameObject.GetComponent<Asteroid>().TakeDamage(500);
                         hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
