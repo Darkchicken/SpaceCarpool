@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class CheckLocation : MonoBehaviour {
 
     static string masterPlayfabId;
+    GameObject debugObject;
     public Text debugText;
     bool updatePosition = false;
     //distance a player can be from host before being out of range
@@ -31,8 +32,9 @@ public class CheckLocation : MonoBehaviour {
     void Awake()
     {
         if(GameObject.Find("DebugText") != null)
-        { 
-         debugText = GameObject.Find("DebugText").GetComponent<Text>();
+        {
+            debugObject = GameObject.Find("DebugText");
+            debugText = GameObject.Find("DebugText").GetComponent<Text>();
         }
     }
     IEnumerator Start()
@@ -83,7 +85,13 @@ public class CheckLocation : MonoBehaviour {
 
     void Update()
     {
-       
+        //toggles debug text on and off
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //activate debug text
+            debugObject.SetActive(!debugObject.activeSelf);
+
+        }
         if (updatePosition == true)
         {
             if(updating == false)
