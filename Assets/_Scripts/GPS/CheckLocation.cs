@@ -20,6 +20,8 @@ public class CheckLocation : MonoBehaviour {
     bool inRange;
     //last timestamp
     double lastUpdate = 0;
+    double currentTime = 0;
+
     PhotonView photonView;
 
     public float myLon;
@@ -77,8 +79,8 @@ public class CheckLocation : MonoBehaviour {
 
         }
         photonView = GetComponent<PhotonView>();
-        //set initial value for last update
-        lastUpdate = Input.location.lastData.timestamp;
+        //set initial value for last update and current time
+        lastUpdate = currentTime = Input.location.lastData.timestamp;
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
     }
@@ -105,10 +107,17 @@ public class CheckLocation : MonoBehaviour {
             
             if (PhotonNetwork.isMasterClient)
             {
-                //check speed of host to be sure that host is in a car
-                if(lastUpdate != Input.location.lastData.timestamp)
+                if (Input.location.lastData.timestamp != currentTime)
                 {
-                    currentSpeed = CheckSpeed();
+                    lastUpdate = currentTime;
+                    currentTime = Input.location.lastData.timestamp;
+                }
+                //check speed of host to be sure that host is in a car
+                //if the current timestamp is later than the last timestamp
+                //check the speed, then assign the last speed to the current speed
+                if (currentTime > lastUpdate)
+                {
+                    currentSpeed = CheckSpeed(); 
                 }
                 
                 //set position of host
@@ -143,8 +152,10 @@ public class CheckLocation : MonoBehaviour {
 
                 debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
                   + "\n timestamp: " + Input.location.lastData.timestamp
+                   + "\n last time =  " + lastUpdate
                   //this isnt updating, giving an undefined number
                   + "\n time since last update " + (Input.location.lastData.timestamp - lastUpdate)
+                 
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon
                   + "\n In range? -> " + inRange
                   + "\n Time out of range: " + distanceTimer
@@ -175,9 +186,9 @@ public class CheckLocation : MonoBehaviour {
         //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
         //return true if in a car, return false if not
         double distance = Mathf.Sqrt(Mathf.Pow((myLon- Input.location.lastData.longitude), 2) + Mathf.Pow((myLat- Input.location.lastData.latitude), 2));
-        double time = Input.location.lastData.timestamp-lastUpdate;
+        double time = currentTime-lastUpdate;
         double speed = (distance / time);
-        lastUpdate = Input.location.lastData.timestamp;
+        
         return speed;
 
     }
