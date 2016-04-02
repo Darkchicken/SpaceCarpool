@@ -27,6 +27,11 @@ public class PhotonCalls : PunBehaviour
             player.GetComponent<PlayerCombatManager>().enabled = true;
             player.GetComponent<CameraController>().enabled = true;
             player.GetComponent<CheckLocation>().enabled = true;
+            if (Application.isEditor)
+            {
+                player.GetComponent<MouseLook>().enabled = true;
+            }
+
         }
     }
     public static void NewRoom()

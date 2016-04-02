@@ -143,13 +143,15 @@ public class CheckLocation : MonoBehaviour {
 
                 debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
                   + "\n timestamp: " + Input.location.lastData.timestamp
+                  //this isnt updating, giving an undefined number
                   + "\n time since last update " + (Input.location.lastData.timestamp - lastUpdate)
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon
                   + "\n In range? -> " + inRange
                   + "\n Time out of range: " + distanceTimer
                   + "\n distance = " + GetDistance()
                   + "\n speed = " + currentSpeed
-                   + "\n Master? = " + PhotonNetwork.isMasterClient);
+                  +"\n distance since last =" + Mathf.Sqrt(Mathf.Pow((myLon - Input.location.lastData.longitude), 2) + Mathf.Pow((myLat - Input.location.lastData.latitude), 2))
+                + "\n Master? = " + PhotonNetwork.isMasterClient);
 
             }
             ////////////////////////////////////////////////////////////////       
