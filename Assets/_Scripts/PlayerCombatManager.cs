@@ -30,24 +30,33 @@ public class PlayerCombatManager : MonoBehaviour {
         //Left Click attack to shoot asteroids
         if (Input.GetMouseButtonDown(0))
         {
-            //Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             
-            //Debug.DrawRay(ray.origin, ray.direction * 1000, Color.yellow);
+            Debug.DrawRay(ray.origin, ray.direction * 1000, Color.yellow);
 
             if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
             {
                 Invoke("InstantiateLaserBolt", 0);
-                /*if (Physics.Raycast(ray, out hit, 1000))
+                if (Physics.Raycast(ray, out hit, 1000))
                 {
-                    
+                    nextFire = 0f;
                     if (hit.transform.tag == "Asteroid")
                     {
-                        nextFire = 0f;
-                        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
+                        Debug.Log("Raycast Hit Asteroid");
+                        Invoke("ApplyDamage", 0.1f);
                     }
-                }*/
+                    if(hit.transform.tag == "Resource")
+                    {
+                        Destroy(hit.transform.gameObject);
+                    }
+                }
                     
             }
         }
+    }
+
+    void ApplyDamage()
+    {
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
     }
 }

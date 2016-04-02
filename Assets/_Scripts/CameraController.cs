@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour {
     Quaternion initialRotation;
 
 	public int speed;
-	public Camera playerCamera;
+	private Camera playerCamera;
 
     void Start()
     {

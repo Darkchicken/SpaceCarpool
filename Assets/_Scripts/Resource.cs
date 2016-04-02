@@ -24,5 +24,9 @@ public class Resource : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+        if(other.tag == "LaserBolt")
+        {
+            Destroy(gameObject);
+        }
     }
 }

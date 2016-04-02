@@ -9,6 +9,8 @@ public class Asteroid : MonoBehaviour
     public Mesh[] asteroidMeshes;
     public Material[] asteroidMaterials;
 
+    private static int counter = 0;
+
     void Start()
     {
         objectPos = transform.position;
@@ -40,21 +42,7 @@ public class Asteroid : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
         }
     }
-    /*
-    public void TakeDamage(int damage)
-    {
-        Debug.Log("Asteroid Took Damage!");
-        if(health - damage > 0)
-        {
-            health -= damage;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
-    }
-    */
+
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Destination" && PhotonNetwork.isMasterClient)

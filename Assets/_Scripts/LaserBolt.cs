@@ -3,6 +3,7 @@ using System.Collections;
 
 public class LaserBolt : MonoBehaviour {
 
+    private static int counter = 0;
     // Use this for initialization
     void Start()
     {
@@ -16,21 +17,9 @@ public class LaserBolt : MonoBehaviour {
 
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Asteroid"))
-        {
-            other.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
-            Destroy(gameObject);
-        }
-        else if(other.CompareTag("Resource"))
-        {
-            Destroy(gameObject);
-        }
-    }
     IEnumerator DestroyBeam()
     {
-        yield return new WaitForSeconds(3);
-        Destroy(this.gameObject);
+        yield return new WaitForSeconds(2);
+        Destroy(gameObject);
     }
 }
