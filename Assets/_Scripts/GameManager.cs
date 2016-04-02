@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager gameManager;
     public BoxCollider spawnArea;
     public BoxCollider destinationArea;
+    public Transform muzzleTransform;
     GameObject asteroid;
     GameObject resource;
     //private Vector3 spawnLocationBoundry;
@@ -16,9 +17,6 @@ public class GameManager : MonoBehaviour {
     {
         gameManager = this;
         colliderSize = spawnArea.GetComponent<BoxCollider>().size;
-       
-
-
     }
 
     void Start()

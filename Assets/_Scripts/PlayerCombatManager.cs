@@ -7,6 +7,7 @@ public class PlayerCombatManager : MonoBehaviour {
     public Vector3 muzzleOffset;
     private Vector3 cameraPosition;
     private RaycastHit hit;
+    private Transform muzzleTransform;
   //  public LayerMask layerMask = ~(1 << 8);    //For use with layermask later on if we need it
 
     public float fireRate = 0.5f;       //sets the attack speed value
@@ -15,11 +16,12 @@ public class PlayerCombatManager : MonoBehaviour {
     void Start()
     {
         cameraPosition = Camera.main.transform.position + muzzleOffset;
+        muzzleTransform = GameManager.gameManager.muzzleTransform;
     }
 
     void InstantiateLaserBolt()
     {
-        GameObject bolt = GameObject.Instantiate(laserBolt, cameraPosition, Camera.main.transform.rotation) as GameObject;
+        GameObject bolt = GameObject.Instantiate(laserBolt, muzzleTransform.position, muzzleTransform.rotation) as GameObject;
     }
     void Update()
     {
