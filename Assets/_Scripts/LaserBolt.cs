@@ -6,7 +6,7 @@ public class LaserBolt : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-
+        StartCoroutine(DestroyBeam());
     }
 
     // Update is called once per frame
@@ -27,5 +27,10 @@ public class LaserBolt : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+    }
+    IEnumerator DestroyBeam()
+    {
+        yield return new WaitForSeconds(3);
+        Destroy(this.gameObject);
     }
 }
