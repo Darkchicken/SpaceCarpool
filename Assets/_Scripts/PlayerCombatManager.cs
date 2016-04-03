@@ -18,10 +18,10 @@ public class PlayerCombatManager : MonoBehaviour {
         cameraPosition = Camera.main.transform.position + muzzleOffset;
         muzzleTransform = GameManager.gameManager.muzzleTransform;
     }
-
-    void InstantiateLaserBolt()
+    [PunRPC]
+    void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot)
     {
-        GameObject bolt = GameObject.Instantiate(laserBolt, muzzleTransform.position, muzzleTransform.rotation) as GameObject;
+        GameObject bolt = GameObject.Instantiate(laserBolt, muzzlePos, muzzleRot) as GameObject;
     }
     void Update()
     {
@@ -36,7 +36,8 @@ public class PlayerCombatManager : MonoBehaviour {
 
             if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
             {
-                Invoke("InstantiateLaserBolt", 0);
+                GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation);
+                //Invoke("InstantiateLaserBolt", 0);
                 if (Physics.Raycast(ray, out hit, 1000))
                 {
                     nextFire = 0f;

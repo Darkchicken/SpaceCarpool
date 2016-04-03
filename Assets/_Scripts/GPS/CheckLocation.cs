@@ -14,8 +14,12 @@ public class CheckLocation : MonoBehaviour {
     float variance = 0.001f;
     //timer to check how long player has been out of range
     float distanceTimer = 0;
+    //timer to check how long player has been below speed limit
+    float speedTimer = 0;
     //player will be kicked if out of range for 30 sec
     float timeToKick = 30f;
+    //points will cease being added if under speed limit for 60 sec
+    float timeToEndPoints = 60f;
     //checks if player is currently in range of host
     bool inRange;
     //last timestamp
@@ -32,6 +36,10 @@ public class CheckLocation : MonoBehaviour {
     public float masterLat;
     double currentSpeed = 0;
     bool updating = false;
+    //check if players should be earning points
+    //sets to true upon reaching speed limit
+    bool earningPoints = false;
+    double speedLimit = 15.0;
 
     void Awake()
     {
@@ -129,14 +137,16 @@ public class CheckLocation : MonoBehaviour {
                 //check the speed, then assign the last speed to the current speed
                 if (currentTime > lastUpdate)
                 {
-                    currentSpeed = CheckSpeed(); 
+                    currentSpeed = CheckSpeed();
+                    //check if points should be earned
+                    SpeedMaintained();
+                   
                 }
-               
-                //set position of host
-               // masterLon = myLon = Input.location.lastData.longitude;
-                //masterLat = myLat = Input.location.lastData.latitude;
-                
-              
+
+
+
+
+
                 //Host is always in range of themself
                 inRange = true;
             }
@@ -162,20 +172,21 @@ public class CheckLocation : MonoBehaviour {
             if (SceneManager.GetActiveScene().name == "TestGPS" || SceneManager.GetActiveScene().name == "TestSpawning")
             {
 
-                debugText.text = ("Location (lat/long): " + myLat + " / " + myLon
-                     + "\n Last Lat/lon: " + lastLat + " / " + lastLon
-                  + "\n timestamp: " + Input.location.lastData.timestamp
-                   + "\n last time =  " + lastUpdate
-                  //this isnt updating, giving an undefined number
-                  + "\n time since last update " + (Input.location.lastData.timestamp - lastUpdate)
-                 
-                  + "\n Master (lat/long): " + masterLat + " / " + masterLon
-                  + "\n In range? -> " + inRange
-                  + "\n Time out of range: " + distanceTimer
-                  + "\n distance from master = " + GetDistance()
-                  + "\n speed = " + currentSpeed
-                  +"\n distance since last update =" + Mathf.Sqrt(Mathf.Pow((masterLon - lastLon), 2) + Mathf.Pow((masterLat - lastLat), 2))
-                + "\n Master? = " + PhotonNetwork.isMasterClient);
+                debugText.text = ("Location (lat/long): " + myLat + " / " + myLon//your current latitude and longitude
+                     + "\n Last Lat/lon: " + lastLat + " / " + lastLon           //the lat and long given on the previous update
+                  + "\n timestamp: " + Input.location.lastData.timestamp         //your current timestamp
+                   + "\n last time =  " + lastUpdate                             //the Timestamp given on the previous update 
+                  + "\n time since last update " + (Input.location.lastData.timestamp - lastUpdate)//The time taken since the last update
+                  + "\n Master (lat/long): " + masterLat + " / " + masterLon     //The lat and long of the master client
+                  + "\n In range? -> " + inRange                                 //Are you in range of the master?
+                  + "\n Time out of range: " + distanceTimer                     //How long have you been out of range?
+                  + "\n distance from master = " + GetDistance()                 //How far are you from the master?
+                  + "\n speed = " + currentSpeed                                 //Your current speed
+                  +"\n distance since last update ="                             //The distance you have travelled since the last update
+                  + Mathf.Sqrt(Mathf.Pow((masterLon - lastLon), 2) + Mathf.Pow((masterLat - lastLat), 2))
+                + "\n Master? = " + PhotonNetwork.isMasterClient                 //Are you the master client?
+                +"\n Earning Points? = " + earningPoints);                       //Should points be distributed?
+
 
             }
             ////////////////////////////////////////////////////////////////       
@@ -230,6 +241,29 @@ public class CheckLocation : MonoBehaviour {
         }
        
        
+    }
+
+    public void SpeedMaintained()
+    {
+        //if master is moving over speed limit, set timer to 0
+        //set earning points to true
+        if (currentSpeed >= speedLimit)
+        {
+            earningPoints = true;
+            speedTimer = 0;
+        }
+        //if master is slower than speed limit, increment timer
+        else
+        {
+            speedTimer += Time.deltaTime;
+            //if the timer is greater than the max time out of range
+            if (speedTimer > timeToEndPoints)
+            {
+                earningPoints = false;
+            }
+        }
+
+
     }
     public void UpdateMasterPos()
     {
