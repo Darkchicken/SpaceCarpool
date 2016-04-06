@@ -56,6 +56,9 @@ public class PlayFabUserLogin : MonoBehaviour
         if(PhotonNetwork.CreateRoom(PlayFabDataStore.userName))
         {
             debugText.text = "Room with name: "+PhotonNetwork.room+" created!";
+            //Set player index for coloring
+            Debug.Log("player size " + PhotonNetwork.playerList.Length);
+            PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
            
         }
         else
@@ -63,6 +66,7 @@ public class PlayFabUserLogin : MonoBehaviour
             debugText.text = "Failed to create room";
         }
     }
+
     public void Join()
     {
         if(joinInputField.text != null)
@@ -71,7 +75,8 @@ public class PlayFabUserLogin : MonoBehaviour
             Debug.Log("Attempting to join room: "+ joinInputField.text);
             PhotonNetwork.JoinRoom(joinInputField.text);
             
-            
+
+
         }
         else
         {

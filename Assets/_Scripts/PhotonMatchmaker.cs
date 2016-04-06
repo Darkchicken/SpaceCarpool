@@ -45,6 +45,10 @@ public class PhotonMatchmaker : PunBehaviour
             +"\n Current longitude = "+ locationHandler.GetComponent<CheckLocation>().myLon 
             +"\n Current latitude = " + locationHandler.GetComponent<CheckLocation>().myLat;
 
+        //Set player index for coloring
+        PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
+        Debug.Log("player size " + PhotonNetwork.playerList.Length);
+
         //if you are not the host
         if (!PhotonNetwork.isMasterClient)
         {

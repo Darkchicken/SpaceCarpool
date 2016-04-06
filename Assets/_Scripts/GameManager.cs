@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
     public static GameManager gameManager;
+    public List<Color> laserBoltColors;
     public BoxCollider spawnArea;
     public BoxCollider destinationArea;
     public Transform muzzleTransform;

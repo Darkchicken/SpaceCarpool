@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerCombatManager : MonoBehaviour {
 
@@ -21,9 +22,10 @@ public class PlayerCombatManager : MonoBehaviour {
         muzzleTransform = GameManager.gameManager.muzzleTransform;
     }
     [PunRPC]
-    void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot)
+    void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex)
     {
         GameObject bolt = GameObject.Instantiate(laserBolt, muzzlePos, muzzleRot) as GameObject;
+        bolt.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
     }
     void Update()
     {
@@ -38,7 +40,8 @@ public class PlayerCombatManager : MonoBehaviour {
 
             if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
             {
-                GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation);
+                Debug.Log(PlayFabDataStore.laserBoltColorIndex);
+                GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex);
                 //Invoke("InstantiateLaserBolt", 0);
                 if (Physics.Raycast(ray, out hit, 1000))
                 {
@@ -62,6 +65,6 @@ public class PlayerCombatManager : MonoBehaviour {
 
     void ApplyDamage()
     {
-        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 1000);
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, 1000, PlayFabDataStore.laserBoltColorIndex);
     }
 }

@@ -26,7 +26,6 @@ public class Resource : MonoBehaviour {
         }
         if(other.tag == "LaserBolt")
         {
-            GameObject LaserParticle = PhotonNetwork.Instantiate("BlastLaserEffect", transform.localPosition, transform.rotation, 0) as GameObject;
             Destroy(gameObject);
         }
     }

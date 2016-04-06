@@ -17,6 +17,8 @@ public class PlayFabDataStore : MonoBehaviour
     public static float masterClientLatitude;
     public static float masterClientLongitude;
 
+    public static int laserBoltColorIndex;
+
     /*
     Dictionary<string, string> customData = new Dictionary<string, string>(); //create a dictionary for the data
     string locationString = playerLatitude + "#" + playerLongitude;
