@@ -12,6 +12,7 @@ public class PlayerCombatManager : MonoBehaviour {
 
     public float fireRate = 0.5f;       //sets the attack speed value
     private float nextFire = 0.0f;
+    private int counter = 0;
 
     void Start()
     {
@@ -43,8 +44,8 @@ public class PlayerCombatManager : MonoBehaviour {
                     nextFire = 0f;
                     if (hit.transform.tag == "Asteroid")
                     {
-                        Debug.Log("Raycast Hit Asteroid");
-                        Invoke("ApplyDamage", 0.1f);
+                        Debug.Log("hit count: " + counter++);
+                        ApplyDamage();
                     }
                     if(hit.transform.tag == "Resource")
                     {
@@ -58,6 +59,6 @@ public class PlayerCombatManager : MonoBehaviour {
 
     void ApplyDamage()
     {
-        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 500);
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.MasterClient, 1000);
     }
 }

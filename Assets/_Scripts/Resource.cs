@@ -15,7 +15,7 @@ public class Resource : MonoBehaviour {
         GetComponent<MeshRenderer>().material = resourceMaterials[selector];*/
         float asteroidScale = Random.Range(0.01f, 0.1f);
         transform.localScale = new Vector3(asteroidScale, asteroidScale, asteroidScale);
-        GetComponent<MoveObjects>().speed = Random.Range(100, 300);
+        GetComponent<MoveObjects>().speed = Random.Range(50, 150);
     }
 
     void OnTriggerEnter(Collider other)

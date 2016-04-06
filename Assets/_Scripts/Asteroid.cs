@@ -26,7 +26,7 @@ public class Asteroid : MonoBehaviour
             int matNum = selector;
             float asteroidScale = Random.Range(0.1f, 2);
             transform.localScale = new Vector3(asteroidScale, asteroidScale, asteroidScale);
-            GetComponent<MoveObjects>().speed = Random.Range(100, 300);
+            GetComponent<MoveObjects>().speed = Random.Range(50, 150);
             health = (int)(100 * asteroidScale * 3);
             GetComponent<PhotonView>().RPC("SetDetails",PhotonTargets.AllBufferedViaServer, meshNum,matNum, transform.localScale, GetComponent<MoveObjects>().speed, health);
             
