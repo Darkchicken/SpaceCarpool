@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour {
                 Random.Range(spawnArea.transform.position.y - spawnArea.size.y / 2, spawnArea.transform.position.y + spawnArea.size.y / 2), spawnArea.transform.position.z);
                 GameObject asteroidObject = PhotonNetwork.Instantiate("Asteroid", spawnLocation, Quaternion.identity, 0) as GameObject;
             }
-            else if (randomNumber <= 900) //Spawn Resource
+            else if (randomNumber <= 0) //Spawn Resource
             {
                 spawnLocation = new Vector3(Random.Range(spawnArea.transform.position.x - spawnArea.size.x / 2, spawnArea.transform.position.x + spawnArea.size.x / 2),
                 Random.Range(spawnArea.transform.position.y - spawnArea.size.y / 2, spawnArea.transform.position.y + spawnArea.size.y / 2), spawnArea.transform.position.z);
@@ -54,6 +54,18 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(Random.Range(0, 2));
 
         StartCoroutine(SpawnObject());
+
+    }
+
+    [PunRPC]
+    void SpawnAsteroid()
+    {
+
+    }
+
+    [PunRPC]
+    void SpawnResource()
+    {
 
     }
 }

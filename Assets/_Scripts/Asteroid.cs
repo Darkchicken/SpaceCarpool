@@ -13,7 +13,7 @@ public class Asteroid : MonoBehaviour
     private static int counter = 0;
 
 
-    void Start()
+    void Awake()
     {
         objectPos = transform.position;
         objectRot = Quaternion.identity;
@@ -37,19 +37,18 @@ public class Asteroid : MonoBehaviour
     }
     void Update()
     {
-        if (!PhotonNetwork.isMasterClient)
+       /* if (!PhotonNetwork.isMasterClient)
         {
             transform.position = Vector3.Lerp(transform.position, objectPos, 0.1f);
             transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
-        }
+        }*/
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Destination" && PhotonNetwork.isMasterClient)
+        if (other.tag == "Destination")
         {
-
-            PhotonNetwork.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -106,7 +105,7 @@ public class Asteroid : MonoBehaviour
     
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
+        /*if (stream.isWriting)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -126,7 +125,7 @@ public class Asteroid : MonoBehaviour
             }
             
 
-        }
+        }*/
     }
     
 

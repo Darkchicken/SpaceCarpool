@@ -10,6 +10,7 @@ public class MoveObjects : MonoBehaviour {
     private Vector3 colliderSize;
     private Vector3 endPosition;
     private Vector3 direction;
+    private bool masterUpdated = false;
 
     void Start()
     {
@@ -17,15 +18,31 @@ public class MoveObjects : MonoBehaviour {
         objectRigidBody = GetComponent<Rigidbody>();
         destinationArea = GameManager.gameManager.destinationArea;
         colliderSize = destinationArea.GetComponent<BoxCollider>().size;
-        endPosition = new Vector3(Random.Range(destinationArea.transform.position.x - destinationArea.size.x / 2, destinationArea.transform.position.x + destinationArea.size.x / 2),
+
+        if(PhotonNetwork.isMasterClient)
+        {
+            endPosition = new Vector3(Random.Range(destinationArea.transform.position.x - destinationArea.size.x / 2, destinationArea.transform.position.x + destinationArea.size.x / 2),
             Random.Range(destinationArea.transform.position.y - destinationArea.size.y / 2, destinationArea.transform.position.y + destinationArea.size.y / 2), destinationArea.transform.position.z);
-        direction = (endPosition - transform.position).normalized;
+            GetComponent<PhotonView>().RPC("SetDirection", PhotonTargets.All, endPosition);
+        }
+        
     }
 
-	void FixedUpdate ()
+    [PunRPC]
+    void SetDirection(Vector3 endPosition)
     {
-        objectRigidBody.MovePosition(transform.position + direction * speed * Time.deltaTime);
+        direction = (endPosition - transform.position).normalized;
+        masterUpdated = true;
+        Debug.Log("MasterUpdated: " + masterUpdated);
+    }
 
+    void FixedUpdate ()
+    {
+        if(masterUpdated)
+        {
+            objectRigidBody.MovePosition(transform.position + direction * speed * Time.deltaTime);
+
+        }
     }
 	
 }
