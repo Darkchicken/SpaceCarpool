@@ -43,9 +43,10 @@ public class PlayerCombatManager : MonoBehaviour {
                 if (Physics.Raycast(ray, out hit, 1000))
                 {
                     nextFire = 0f;
-                    GameManager.gameManager.hitObjectMaterial = hit.transform.gameObject.GetComponent<MeshRenderer>().material;
+                    
                     if (hit.transform.tag == "Asteroid")
                     {
+                        GameManager.gameManager.hitObjectMaterial = hit.transform.gameObject.GetComponent<MeshRenderer>().material;
                         Debug.Log("hit count: " + counter++);
                         ApplyDamage();
                     }

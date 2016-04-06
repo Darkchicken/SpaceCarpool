@@ -64,6 +64,7 @@ public class Asteroid : MonoBehaviour
             }
             else
             {
+                GameObject LaserParticle = PhotonNetwork.Instantiate("BlastLaserEffect", transform.localPosition, transform.rotation, 0) as GameObject;
                 GameObject asteroidParticle = PhotonNetwork.Instantiate("BlastAsteroidEffect", transform.localPosition, transform.rotation, 0) as GameObject;
                 PhotonNetwork.Destroy(gameObject);
             }
