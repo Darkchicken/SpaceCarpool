@@ -63,8 +63,8 @@ public class Asteroid : MonoBehaviour
                 health -= getDamage;
             }
             else
-            { 
-
+            {
+                GameObject asteroidParticle = PhotonNetwork.Instantiate("BlastAsteroidEffect", transform.localPosition, transform.rotation, 0) as GameObject;
                 PhotonNetwork.Destroy(gameObject);
             }
         }

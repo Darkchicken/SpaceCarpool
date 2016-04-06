@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public BoxCollider spawnArea;
     public BoxCollider destinationArea;
     public Transform muzzleTransform;
+    public Material hitObjectMaterial;
     GameObject asteroid;
     GameObject resource;
     //private Vector3 spawnLocationBoundry;
