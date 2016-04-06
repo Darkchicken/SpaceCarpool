@@ -9,7 +9,13 @@ public class PlayFabUserLogin : MonoBehaviour
 {
 
     public GameObject locationHandler;
-
+    public Text hostInfo;
+    public GameObject hostButton;
+    public GameObject beginButton;
+    public GameObject joinButton;
+    public GameObject joinTextField;
+    public GameObject backButton;
+    bool waitingForPlayers = false;
 
     public InputField loginUsernameField;
     public InputField loginPasswordField;
@@ -27,9 +33,10 @@ public class PlayFabUserLogin : MonoBehaviour
     void Awake()
     {
         playFabUserLogin = this;
+       
     }
-
-
+   
+  
     public void Login()
     {
         PlayFabApiCalls.PlayFabLogin(loginUsernameField.text, loginPasswordField.text);
@@ -59,7 +66,16 @@ public class PlayFabUserLogin : MonoBehaviour
             //Set player index for coloring
             Debug.Log("player size " + PhotonNetwork.playerList.Length);
             PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
-           
+            hostInfo.text = "Waiting for teammates...";
+            hostButton.SetActive(false);
+            joinButton.SetActive(false);
+            joinTextField.SetActive(false);
+            backButton.SetActive(true);
+            waitingForPlayers = true;
+            //for testing
+            beginButton.SetActive(true);
+
+
         }
         else
         {
@@ -69,6 +85,7 @@ public class PlayFabUserLogin : MonoBehaviour
 
     public void Join()
     {
+
         if(joinInputField.text != null)
         {
             debugText.text = "Attempting to join room: " + joinInputField.text;
@@ -102,5 +119,27 @@ public class PlayFabUserLogin : MonoBehaviour
             debugText.text = "Cannot begin, must host or join a room first";
         }
     }
-   
+    public void GoBack()
+    {
+        if (PhotonNetwork.room != null)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+        hostButton.SetActive(true);
+        joinButton.SetActive(true);
+        joinTextField.SetActive(true);
+        beginButton.SetActive(false);
+        backButton.SetActive(false);
+        hostInfo.text = "";
+
+    }
+    void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+    {
+        hostInfo.text = "Ready to fly:\n" + PhotonNetwork.playerList.Length;
+        if (beginButton.activeSelf && PhotonNetwork.countOfPlayers > 1)
+        {
+            beginButton.SetActive(true);
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
     public Material hitObjectMaterial;
     GameObject asteroid;
     GameObject resource;
+    GameObject returnButton;
     //private Vector3 spawnLocationBoundry;
     private Vector3 colliderSize;
     private Vector3 spawnLocation;
@@ -20,10 +21,17 @@ public class GameManager : MonoBehaviour {
     {
         gameManager = this;
         colliderSize = spawnArea.GetComponent<BoxCollider>().size;
+        returnButton = GameObject.Find("ReturnToBase");
+        
+
     }
 
     void Start()
     {
+        if(!PhotonNetwork.isMasterClient)
+        {
+            returnButton.SetActive(false);
+        }
         StartCoroutine(SpawnObject());
     }
 

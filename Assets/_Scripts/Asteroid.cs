@@ -103,7 +103,7 @@ public class Asteroid : MonoBehaviour
         GetComponent<MoveObjects>().speed = newSpeed;
         health = newHealth;
     }
-    
+   /* 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -128,6 +128,7 @@ public class Asteroid : MonoBehaviour
 
         }
     }
+    */
     
 
 }
