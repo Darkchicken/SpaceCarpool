@@ -117,10 +117,11 @@ public class Asteroid : MonoBehaviour
         GetComponent<MoveObjects>().speed = newSpeed;
         health = newHealth;
     }
-   /* 
+
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        /*if (stream.isWriting)
+        /*
+        if (stream.isWriting)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -128,7 +129,7 @@ public class Asteroid : MonoBehaviour
                 stream.SendNext(transform.position);
                 stream.SendNext(transform.rotation);
             }
-            
+
         }
         else
         {
@@ -138,8 +139,10 @@ public class Asteroid : MonoBehaviour
                 objectPos = (Vector3)stream.ReceiveNext();
                 objectRot = (Quaternion)stream.ReceiveNext();
             }
-            
 
-        }*/
+
+        }
+        */
+    }
 
 }
