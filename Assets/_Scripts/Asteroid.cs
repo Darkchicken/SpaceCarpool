@@ -141,8 +141,5 @@ public class Asteroid : MonoBehaviour
             
 
         }*/
-    }
-    */
-    
 
 }
