@@ -39,6 +39,8 @@ public class CheckLocation : MonoBehaviour {
     //check if players should be earning points
     //sets to true upon reaching speed limit
     bool earningPoints = false;
+    //multiply the current speed by this since the speed variable is E-05
+    double multiplier = 100000;
     double speedLimit = 15.0;
 
     void Awake()
@@ -181,7 +183,7 @@ public class CheckLocation : MonoBehaviour {
                   + "\n In range? -> " + inRange                                 //Are you in range of the master?
                   + "\n Time out of range: " + distanceTimer                     //How long have you been out of range?
                   + "\n distance from master = " + GetDistance()                 //How far are you from the master?
-                  + "\n speed = " + currentSpeed                                 //Your current speed
+                  + "\n speed (with multiplier) = " + currentSpeed * multiplier//Your current speed
                   +"\n distance since last update ="                             //The distance you have travelled since the last update
                   + Mathf.Sqrt(Mathf.Pow((masterLon - lastLon), 2) + Mathf.Pow((masterLat - lastLat), 2))
                 + "\n Master? = " + PhotonNetwork.isMasterClient                 //Are you the master client?
@@ -212,8 +214,14 @@ public class CheckLocation : MonoBehaviour {
         { return 0; }
         //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
         //return true if in a car, return false if not
+       
         double distance = Mathf.Sqrt(Mathf.Pow((masterLon- lastLon), 2) + Mathf.Pow((masterLat-lastLat), 2));
         double time = currentTime-lastUpdate;
+        ///fix initial speed check
+        if(lastLon == 0 || lastLat == 0)
+        {
+            distance = 0;
+        }
         double speed = (distance / time);
         
         return speed;
@@ -245,9 +253,10 @@ public class CheckLocation : MonoBehaviour {
 
     public void SpeedMaintained()
     {
+       
         //if master is moving over speed limit, set timer to 0
         //set earning points to true
-        if (currentSpeed >= speedLimit)
+        if ((currentSpeed * multiplier) >= speedLimit)
         {
             earningPoints = true;
             speedTimer = 0;
