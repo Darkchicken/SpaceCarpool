@@ -60,4 +60,30 @@ public class Resource : MonoBehaviour {
         transform.localScale = newScale;
         GetComponent<MoveObjects>().speed = newSpeed;
     }
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        /*
+        if (stream.isWriting)
+        {
+            if (PhotonNetwork.isMasterClient)
+            {
+                //We own this player: send the others our data
+                stream.SendNext(transform.position);
+                stream.SendNext(transform.rotation);
+            }
+
+        }
+        else
+        {
+            if (!PhotonNetwork.isMasterClient)
+            {
+                //Network player, receive data
+                objectPos = (Vector3)stream.ReceiveNext();
+                objectRot = (Quaternion)stream.ReceiveNext();
+            }
+
+
+        }
+        */
+    }
 }
