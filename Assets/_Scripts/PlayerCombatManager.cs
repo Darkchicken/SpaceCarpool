@@ -6,15 +6,22 @@ public class PlayerCombatManager : MonoBehaviour {
 
     public GameObject laserBolt;
     public Vector3 muzzleOffset;
-    
+    public float fireRate = 0.5f;
+    public float beamCatchTime = 2;
+
     private Vector3 cameraPosition;
     private RaycastHit hit;
     private Transform muzzleTransform;
-  //  public LayerMask layerMask = ~(1 << 8);    //For use with layermask later on if we need it
 
-    public float fireRate = 0.5f;       //sets the attack speed value
-    private float nextFire = 0.0f;
+    private float nextFire = 0;
     private int counter = 0;
+
+    private bool isFireWeapon = true;
+    private float beamTimer = 0;
+    private float beamLength = 0;
+    private bool isBeamBroken = false;
+
+    private GameObject tempBeam;
 
     void Start()
     {
@@ -24,8 +31,17 @@ public class PlayerCombatManager : MonoBehaviour {
     [PunRPC]
     void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex)
     {
-        GameObject bolt = GameObject.Instantiate(laserBolt, muzzlePos, muzzleRot) as GameObject;
+        GameObject bolt = GameObject.Instantiate(Resources.Load("LaserBolt"), muzzlePos, muzzleRot) as GameObject;
         bolt.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+    }
+    [PunRPC]
+    void InstantiateTractorBeam(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex, float distance)
+    {
+        GameObject beam = Instantiate(Resources.Load("TractorBeam"), muzzlePos, muzzleRot) as GameObject;
+        tempBeam = beam;
+        beam.transform.parent = muzzleTransform;
+        beam.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        beam.GetComponent<VolumetricLineBehavior>().EndPos = new Vector3(0, 0, distance);
     }
     void Update()
     {
@@ -35,36 +51,90 @@ public class PlayerCombatManager : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            
-            Debug.DrawRay(ray.origin, ray.direction * 1000, Color.yellow);
 
-            if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
+            if (isFireWeapon)
             {
-                Debug.Log(PlayFabDataStore.laserBoltColorIndex);
-                GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex);
-                //Invoke("InstantiateLaserBolt", 0);
+                if (nextFire >= fireRate)   //define "Shoot" button when we get tap to shootand remove mouseButton
+                {
+                    Debug.Log(PlayFabDataStore.laserBoltColorIndex);
+                    GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex);
+
+                    if (Physics.Raycast(ray, out hit, 1000))
+                    {
+                        nextFire = 0;
+
+                        if (hit.transform.tag == "Asteroid")
+                        {
+                            GameManager.gameManager.hitObjectMaterial = hit.transform.gameObject.GetComponent<MeshRenderer>().material;
+                            Debug.Log("hit count: " + counter++);
+                            ApplyDamage();
+                        }
+                        if (hit.transform.tag == "Resource")
+                        {
+                            HitObject();
+                        }
+                    }
+
+                }
+            }
+            else
+            {
                 if (Physics.Raycast(ray, out hit, 1000))
                 {
-                    nextFire = 0f;
-                    
-                    if (hit.transform.tag == "Asteroid")
+                    if (hit.transform.tag == "Resource")
                     {
-                        GameManager.gameManager.hitObjectMaterial = hit.transform.gameObject.GetComponent<MeshRenderer>().material;
-                        Debug.Log("hit count: " + counter++);
-                        ApplyDamage();
+                        beamLength = Vector3.Distance(muzzleTransform.position, hit.transform.position);
+                        GetComponent<PhotonView>().RPC("InstantiateTractorBeam", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex, beamLength);
                     }
-                    if(hit.transform.tag == "Resource")
-                    {
-                        Destroy(hit.transform.gameObject);
-                    }
-                }
-                    
+                        
+                }   
+                beamTimer = 0;
             }
         }
+
+        if (Input.GetMouseButton(0))
+        {
+            if (!isFireWeapon)
+            {
+                beamTimer += Time.deltaTime;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+                if (Physics.Raycast(ray, out hit, 1000))
+                {
+                    if (hit.transform.tag == "Resource")
+                    {
+                        if(beamTimer >= beamCatchTime )
+                        {
+                            CatchResource();
+                        }
+                    }
+                    else
+                    {
+                        beamTimer = 0;
+                    }
+                }
+
+           }
+        }
+    }
+
+    public void SetWeapon(bool select)
+    {
+        isFireWeapon = select;
     }
 
     void ApplyDamage()
     {
         hit.transform.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, 1000, PlayFabDataStore.laserBoltColorIndex);
+    }
+
+    void HitObject()
+    {
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("Hit", PhotonTargets.All, PlayFabDataStore.laserBoltColorIndex);
+    }
+
+    void CatchResource()
+    {
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("ReceiveResource", PhotonTargets.All);
     }
 }

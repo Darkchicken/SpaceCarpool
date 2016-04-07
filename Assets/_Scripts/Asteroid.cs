@@ -10,10 +10,12 @@ public class Asteroid : MonoBehaviour
     public List<Mesh> asteroidMeshes;
     public List<Material> asteroidMaterials;
 
+    private int MaterialIndex;
+
     private static int counter = 0;
 
 
-    void Start()
+    void Awake()
     {
         objectPos = transform.position;
         objectRot = Quaternion.identity;
@@ -26,6 +28,7 @@ public class Asteroid : MonoBehaviour
             selector = Random.Range(0, asteroidMaterials.Count);
             GetComponent<MeshRenderer>().material = asteroidMaterials[selector];
             int matNum = selector;
+            MaterialIndex = selector;
             float asteroidScale = Random.Range(0.1f, 2);
             transform.localScale = new Vector3(asteroidScale, asteroidScale, asteroidScale);
             GetComponent<MoveObjects>().speed = Random.Range(50, 150);
@@ -37,27 +40,26 @@ public class Asteroid : MonoBehaviour
     }
     void Update()
     {
-        if (!PhotonNetwork.isMasterClient)
+       /* if (!PhotonNetwork.isMasterClient)
         {
             transform.position = Vector3.Lerp(transform.position, objectPos, 0.1f);
             transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
-        }
+        }*/
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Destination" && PhotonNetwork.isMasterClient)
+        if (other.tag == "Destination")
         {
-
-            PhotonNetwork.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
     [PunRPC]
     public void TakeDamage(int getDamage, int laserBoltColorIndex)
     {
-        GameObject LaserParticle = GameObject.Instantiate(Resources.Load("BlastLaserEffect"), transform.localPosition, transform.rotation) as GameObject;
-        LaserParticle.GetComponent<ParticleSystemRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        GameObject laserParticle = Instantiate(Resources.Load("BlastLaserEffect"), transform.localPosition, transform.rotation) as GameObject;
+        laserParticle.GetComponent<ParticleSystemRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
 
         if (health - getDamage > 0)
         {
@@ -66,14 +68,20 @@ public class Asteroid : MonoBehaviour
         else
         {
 
-            //GetComponent<PhotonView>().RPC("DestroyAsteroid", PhotonTargets.All);
-            GameObject asteroidParticle = GameObject.Instantiate(Resources.Load("BlastAsteroidEffect"), transform.localPosition, transform.rotation) as GameObject;
+            GameObject asteroidParticle = Instantiate(Resources.Load("BlastAsteroidEffect"), transform.localPosition, transform.rotation) as GameObject;
             asteroidParticle.GetComponent<ParticleSystemRenderer>().material = GetComponent<MeshRenderer>().material;
-            Destroy(gameObject);
+            
+            if(PhotonNetwork.isMasterClient)
+            {
+                GameObject resource = PhotonNetwork.Instantiate("Resource", transform.position, transform.rotation, 0) as GameObject;
+
+                //resource.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
+                GameManager.gameManager.hitAsteroidMaterialIndex = MaterialIndex;
+                Debug.Log("MAT SET index " + MaterialIndex);
+            }
+
+            DestroyAsteroid();
         }
-
-
-
 
         /*if (PhotonNetwork.isMasterClient)
         {
@@ -91,6 +99,12 @@ public class Asteroid : MonoBehaviour
         }*/
     }
 
+    void DestroyAsteroid()
+    {
+        Debug.Log("AST DEST");
+        Destroy(gameObject);
+    }
+
 
     [PunRPC]
     public void SetDetails(int meshNumber,int materialNum, Vector3 newScale, float newSpeed, int newHealth)
@@ -106,7 +120,7 @@ public class Asteroid : MonoBehaviour
    /* 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
+        /*if (stream.isWriting)
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -126,7 +140,7 @@ public class Asteroid : MonoBehaviour
             }
             
 
-        }
+        }*/
     }
     */
     
