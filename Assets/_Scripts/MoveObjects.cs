@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MoveObjects : MonoBehaviour {
 
-    public float speed;
+    public float speed = 1;
     private BoxCollider destinationArea;
     private Rigidbody objectRigidBody;
     private float startTime;
@@ -36,6 +36,11 @@ public class MoveObjects : MonoBehaviour {
         Debug.Log("MasterUpdated: " + masterUpdated);
     }
 
+    public Vector3 GetDirection()
+    {
+        return direction;
+    }
+
     void FixedUpdate ()
     {
         if(masterUpdated)
@@ -44,5 +49,11 @@ public class MoveObjects : MonoBehaviour {
 
         }
     }
+    public void SetResourceDirection(Vector3 _direction)
+    {
+        direction = _direction;
+    }
+
+    
 	
 }

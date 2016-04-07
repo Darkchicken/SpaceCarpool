@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
     public BoxCollider destinationArea;
     public Transform muzzleTransform;
     public Material hitObjectMaterial;
+    public int hitAsteroidMaterialIndex;
     GameObject asteroid;
     GameObject resource;
     //private Vector3 spawnLocationBoundry;
@@ -57,14 +58,7 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    [PunRPC]
-    void SpawnAsteroid()
-    {
-
-    }
-
-    [PunRPC]
-    void SpawnResource()
+    public void SelectWeapon()
     {
 
     }

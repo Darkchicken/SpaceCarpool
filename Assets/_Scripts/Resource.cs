@@ -1,21 +1,45 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Resource : MonoBehaviour {
 
-    public Mesh[] resourceMeshes;
-    public Material[] resourceMaterials;
+    public List<Mesh> resourceMeshes;
+    public List<Material> resourceMaterials;
 
     void Start()
     {
-        /*int selector = Random.Range(0, resourceMeshes.Length);
-        GetComponent<MeshFilter>().mesh = resourceMeshes[selector];
-        GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
-        selector = Random.Range(0, resourceMaterials.Length);
-        GetComponent<MeshRenderer>().material = resourceMaterials[selector];*/
-        float asteroidScale = Random.Range(0.01f, 0.1f);
-        transform.localScale = new Vector3(asteroidScale, asteroidScale, asteroidScale);
-        GetComponent<MoveObjects>().speed = Random.Range(50, 150);
+        if (PhotonNetwork.isMasterClient)
+        {
+            int selector = Random.Range(0, resourceMeshes.Count);
+            GetComponent<MeshFilter>().mesh = resourceMeshes[selector];
+            int meshNum = selector;
+            GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
+            int matNum = GameManager.gameManager.hitAsteroidMaterialIndex;
+            float resourceScale = Random.Range(0.05f, 0.1f);
+            transform.localScale = new Vector3(resourceScale, resourceScale, resourceScale);
+            GetComponent<MoveObjects>().speed = Random.Range(5, 20);
+            GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, meshNum, matNum, transform.localScale, GetComponent<MoveObjects>().speed);
+        }
+    }
+
+
+    [PunRPC]
+    public void Hit(int laserBoltColorIndex)
+    {
+        GameObject laserParticle = Instantiate(Resources.Load("BlastLaserEffect"), transform.localPosition, transform.rotation) as GameObject;
+        laserParticle.GetComponent<ParticleSystemRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+
+        Destroy(gameObject);
+    }
+
+    [PunRPC]
+    public void ReceiveResource()
+    {
+        //Points will be granted
+        PlayFabDataStore.playerScore += 10;
+        GameHUDManager.gameHudManager.SetScore();
+        Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
@@ -24,9 +48,16 @@ public class Resource : MonoBehaviour {
         {
             Destroy(gameObject);
         }
-        if(other.tag == "LaserBolt")
-        {
-            Destroy(gameObject);
-        }
+    }
+
+    [PunRPC]
+    public void SetDetails(int meshNumber, int materialNum, Vector3 newScale, float newSpeed)
+    {
+        GetComponent<MeshFilter>().mesh = resourceMeshes[meshNumber];
+        GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
+
+        GetComponent<MeshRenderer>().material = resourceMaterials[materialNum];
+        transform.localScale = newScale;
+        GetComponent<MoveObjects>().speed = newSpeed;
     }
 }
