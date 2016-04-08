@@ -135,6 +135,7 @@ public class PlayFabUserLogin : MonoBehaviour
     }
     void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
     {
+        Debug.Log("New Player Joined");
         hostInfo.text = "Ready to fly:\n" + PhotonNetwork.playerList.Length;
         if (beginButton.activeSelf && PhotonNetwork.countOfPlayers > 1)
         {

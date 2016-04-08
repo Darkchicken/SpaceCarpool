@@ -337,10 +337,10 @@ public class CheckLocation : MonoBehaviour {
             }
         }
     }
-    
+    */
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        
+        /*
         if (stream.isWriting)
         {
             Debug.Log("Is Writing");
@@ -356,21 +356,20 @@ public class CheckLocation : MonoBehaviour {
             masterLon= (float)stream.ReceiveNext();
             masterLat = (float)stream.ReceiveNext();
         }
-        
+        */
         
     }
-    */
+    
     [PunRPC]
     public void UpdateMaster(float lon, float lat)
     {
-        if (photonView.isMine)
-        {
+        
             masterLon = lon;
             masterLat = lat;
             debugText.text = ("Received Update from Master"
                 + "\n MasterLon = " + masterLon
                 + "\n MasterLat = " + masterLat);
-        }
+        
     }
 
 }
