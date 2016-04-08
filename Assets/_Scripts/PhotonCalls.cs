@@ -16,8 +16,8 @@ public class PhotonCalls : PunBehaviour
     {
         //spawnPoint = GameObject.Find("SpawnPoint");
         //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
- 
-        spawnPoint = GameObject.Find("SpawnPoint");
+        string spawnpointName = "SpawnPoint"+PhotonNetwork.playerList.Length.ToString();
+        spawnPoint = GameObject.Find(spawnpointName);
 
         //instantiate player on all clients
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
