@@ -12,17 +12,21 @@ public class PhotonCalls : PunBehaviour
     public Text debugText;
     // static string friendRoomName = null; // get this directly from playfabdatastore
 
+    void Awake()
+    {
+       
+    }
     void Start()
     {
         //spawnPoint = GameObject.Find("SpawnPoint");
         //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        
-      //assigns a number from 1-6
-        string spawnpointName = "SpawnPoint" + PlayFabDataStore.laserBoltColorIndex;
-    
-       
-        spawnPoint = GameObject.Find(spawnpointName);
 
+
+        //assigns a number from 1-6
+        string spawnpointName = "SpawnPoint" + (PlayFabDataStore.laserBoltColorIndex+1);
+       
+
+        spawnPoint = GameObject.Find(spawnpointName);
         //instantiate player on all clients
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
         if(player.GetComponent<PhotonView>().isMine)
