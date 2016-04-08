@@ -7,6 +7,8 @@ public class GameHUDManager : MonoBehaviour {
     public static GameHUDManager gameHudManager;
     public Toggle weaponToggle;
     public Text scoreText;
+    public Image crosshairBlue;
+    public Image crosshairRed;
 
     private GameObject player;
 
@@ -23,6 +25,7 @@ public class GameHUDManager : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Space))
         {
             weaponToggle.isOn = !weaponToggle.isOn;
+
         }
     }
 #endif
@@ -35,10 +38,14 @@ public class GameHUDManager : MonoBehaviour {
         if(weaponToggle.isOn) // true is beam
         {
             player.GetComponent<PlayerCombatManager>().SetWeapon(false);
+            crosshairBlue.enabled = true;
+            crosshairRed.enabled = false;
         }
         else
         {
             player.GetComponent<PlayerCombatManager>().SetWeapon(true);
+            crosshairBlue.enabled = false;
+            crosshairRed.enabled = true;
         }
     }
 

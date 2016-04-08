@@ -35,8 +35,15 @@ public class MouseLook : MonoBehaviour
 
             Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
             Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, -Vector3.right);
+            Debug.Log("X - Q :" + xQuaternion);
+            Debug.Log("Y - Q :" + yQuaternion);
 
             transform.localRotation = originalRotation * xQuaternion * yQuaternion;
+            /*if((xQuaternion.y >= -0.5f && xQuaternion.y <= 0.5f) && (yQuaternion.x >= -0.3f && yQuaternion.x <= 0.3f))
+            {
+                transform.localRotation = originalRotation * xQuaternion * yQuaternion;
+            }*/
+
         }
         else if (axes == RotationAxes.MouseX)
         {
@@ -44,7 +51,13 @@ public class MouseLook : MonoBehaviour
             rotationX = ClampAngle(rotationX, minimumX, maximumX);
 
             Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+
             transform.localRotation = originalRotation * xQuaternion;
+            /*if (xQuaternion.y >= -0.5f && xQuaternion.y <= 0.5f)
+            {
+                transform.localRotation = originalRotation * xQuaternion;
+            }*/
+
         }
         else
         {
@@ -52,7 +65,13 @@ public class MouseLook : MonoBehaviour
             rotationY = ClampAngle(rotationY, minimumY, maximumY);
 
             Quaternion yQuaternion = Quaternion.AngleAxis(-rotationY, Vector3.right);
+
             transform.localRotation = originalRotation * yQuaternion;
+            /*if (yQuaternion.x >= -0.3f && yQuaternion.x <= 0.3f)
+            {
+                transform.localRotation = originalRotation * yQuaternion;
+            }*/
+
         }
         playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
     }
