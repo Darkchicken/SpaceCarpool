@@ -14,10 +14,13 @@ public class GameHUDManager : MonoBehaviour {
     void Start()
     {
         gameHudManager = this;
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
         SetScore();
     }
-
+    public void SetPlayer(GameObject p)
+    {
+        player = p;
+    }
     public void SelectWeapon()
     {
         if(weaponToggle.isOn) // true is beam

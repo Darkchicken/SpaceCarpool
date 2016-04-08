@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour {
 
     void Start()
     {
+        GameObject.Find("GameHUD").GetComponent<GameHUDManager>().SetPlayer(this.gameObject);
         playerCamera = Camera.main;
         playerCamera.gameObject.transform.position = transform.position;
         initialPosition = transform.position;
