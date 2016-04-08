@@ -66,10 +66,6 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void SelectWeapon()
-    {
-
-    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         ///nothing

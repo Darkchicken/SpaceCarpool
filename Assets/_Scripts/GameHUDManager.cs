@@ -22,7 +22,7 @@ public class GameHUDManager : MonoBehaviour {
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            SelectWeapon();
+            weaponToggle.isOn = !weaponToggle.isOn;
         }
     }
 #endif
