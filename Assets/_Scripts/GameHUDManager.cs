@@ -17,6 +17,15 @@ public class GameHUDManager : MonoBehaviour {
         //player = GameObject.FindGameObjectWithTag("Player");
         SetScore();
     }
+#if UNITY_EDITOR
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            SelectWeapon();
+        }
+    }
+#endif
     public void SetPlayer(GameObject p)
     {
         player = p;
