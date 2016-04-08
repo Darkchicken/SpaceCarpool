@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class PlayerCombatManager : MonoBehaviour {
 
-    public GameObject laserBolt;
     public Vector3 muzzleOffset;
     public float fireRate = 0.5f;
     public float beamCatchTime = 2;
@@ -21,7 +20,7 @@ public class PlayerCombatManager : MonoBehaviour {
     private float beamLength = 0;
     private bool isBeamBroken = false;
 
-    private GameObject tempBeam;
+    //private GameObject tempBeam;
 
     void Start()
     {
@@ -31,17 +30,20 @@ public class PlayerCombatManager : MonoBehaviour {
     [PunRPC]
     void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex)
     {
-        GameObject bolt = GameObject.Instantiate(Resources.Load("LaserBolt"), muzzlePos, muzzleRot) as GameObject;
-        bolt.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        GameObject bolt = GameObject.Instantiate(Resources.Load("BasicBeamShot"), muzzlePos, muzzleRot) as GameObject;
+        bolt.GetComponent<BeamParam>().BeamColor = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        //bolt.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
     }
     [PunRPC]
     void InstantiateTractorBeam(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex, float distance)
     {
-        GameObject beam = Instantiate(Resources.Load("TractorBeam"), muzzlePos, muzzleRot) as GameObject;
-        tempBeam = beam;
+        GameObject beam = Instantiate(Resources.Load("GeroBeam"), muzzlePos, muzzleRot) as GameObject;
+        beam.GetComponent<BeamParam>().BeamColor = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        //tempBeam = beam;
         beam.transform.parent = muzzleTransform;
-        beam.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
-        beam.GetComponent<VolumetricLineBehavior>().EndPos = new Vector3(0, 0, distance);
+        beam.GetComponent<BeamParam>().MaxLength = distance;
+        //beam.GetComponent<MeshRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
+        //beam.GetComponent<VolumetricLineBehavior>().EndPos = new Vector3(0, 0, distance);
     }
     void Update()
     {
