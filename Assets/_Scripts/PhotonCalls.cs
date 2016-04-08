@@ -12,9 +12,8 @@ public class PhotonCalls : PunBehaviour
     public Text debugText;
     // static string friendRoomName = null; // get this directly from playfabdatastore
 
-    void Awake()
+    void Start()
     {
-        Debug.Log("Awake called");
         //spawnPoint = GameObject.Find("SpawnPoint");
         //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
  
