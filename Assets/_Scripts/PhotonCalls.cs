@@ -14,6 +14,7 @@ public class PhotonCalls : PunBehaviour
 
     void Awake()
     {
+        Debug.Log("Awake called");
         //spawnPoint = GameObject.Find("SpawnPoint");
         //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
  
@@ -84,6 +85,7 @@ public class PhotonCalls : PunBehaviour
     //upon joining a new room, output the room name
     public override void OnJoinedRoom()
     {
+       
         /*
         Debug.Log("At Least this works!");
        
