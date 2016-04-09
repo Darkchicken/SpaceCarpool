@@ -29,7 +29,8 @@ public class PhotonCalls : PunBehaviour
         spawnPoint = GameObject.Find(spawnpointName);
         //instantiate player on all clients
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        if(player.GetComponent<PhotonView>().isMine)
+        //check if this is the player's view and if they are not the master pilot
+        if(!PhotonNetwork.isMasterClient && player.GetComponent<PhotonView>().isMine)
         {
             //enable scripts only for the controlling player
             player.GetComponent<PlayerCombatManager>().enabled = true;

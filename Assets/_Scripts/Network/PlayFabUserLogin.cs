@@ -15,6 +15,8 @@ public class PlayFabUserLogin : MonoBehaviour
     public GameObject joinButton;
     public GameObject joinTextField;
     public GameObject backButton;
+    public GameObject instructionPanel;
+    public GameObject instructionsButton;
     bool waitingForPlayers = false;
 
     public InputField loginUsernameField;
@@ -25,6 +27,7 @@ public class PlayFabUserLogin : MonoBehaviour
 
     public InputField joinInputField;
 
+    public Canvas login;
     public Canvas createAccount;
     public Canvas mainMenu;
 
@@ -35,8 +38,27 @@ public class PlayFabUserLogin : MonoBehaviour
         playFabUserLogin = this;
        
     }
-   
-  
+    void Update()
+    {
+        if (waitingForPlayers)
+        {
+            if (PhotonNetwork.otherPlayers.Length > 0)
+            {
+                string playerList = "Ready to fly:\n";
+                foreach (PhotonPlayer player in PhotonNetwork.otherPlayers)
+                {
+                    playerList += player.name + "\n";
+                }
+                hostInfo.text = playerList;
+                if (!beginButton.activeSelf && PhotonNetwork.countOfPlayers > 1)
+                {
+                    beginButton.SetActive(true);
+                }
+                //Debug.Log(playerList);
+            }
+        }
+    }
+
     public void Login()
     {
         PlayFabApiCalls.PlayFabLogin(loginUsernameField.text, loginPasswordField.text);
@@ -67,13 +89,16 @@ public class PlayFabUserLogin : MonoBehaviour
             Debug.Log("player size " + PhotonNetwork.playerList.Length);
             PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
             hostInfo.text = "Waiting for teammates...";
+            instructionsButton.SetActive(false);
             hostButton.SetActive(false);
             joinButton.SetActive(false);
             joinTextField.SetActive(false);
             backButton.SetActive(true);
             waitingForPlayers = true;
+          
             //for testing
             beginButton.SetActive(true);
+
 
 
         }
@@ -125,6 +150,9 @@ public class PlayFabUserLogin : MonoBehaviour
         {
             PhotonNetwork.LeaveRoom();
         }
+        waitingForPlayers = false;
+        instructionsButton.SetActive(true); ;
+        instructionPanel.SetActive(false);
         hostButton.SetActive(true);
         joinButton.SetActive(true);
         joinTextField.SetActive(true);
@@ -133,14 +161,12 @@ public class PlayFabUserLogin : MonoBehaviour
         hostInfo.text = "";
 
     }
-    void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+    public void Instructions()
     {
-        Debug.Log("New Player Joined");
-        hostInfo.text = "Ready to fly:\n" + PhotonNetwork.playerList.Length;
-        if (beginButton.activeSelf && PhotonNetwork.countOfPlayers > 1)
-        {
-            beginButton.SetActive(true);
-        }
+        instructionPanel.SetActive(true);
+
     }
+   
+ 
 
 }

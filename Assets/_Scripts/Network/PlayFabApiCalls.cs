@@ -19,7 +19,7 @@ public class PlayFabApiCalls : MonoBehaviour {
         PlayFabClientAPI.LoginWithPlayFab(request, (result) =>
         {
             Debug.Log("Login Successful!");
-            PlayFabUserLogin.playFabUserLogin.gameObject.SetActive(false);
+            PlayFabUserLogin.playFabUserLogin.login.gameObject.SetActive(false);
             PlayFabUserLogin.playFabUserLogin.mainMenu.gameObject.SetActive(true);
             PlayFabDataStore.playFabId = result.PlayFabId;
             PlayFabDataStore.userName = username;

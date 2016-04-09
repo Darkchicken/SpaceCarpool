@@ -17,6 +17,8 @@ public class PhotonMatchmaker : PunBehaviour
 
     public override void OnJoinedLobby()
     {
+        //sets player name in game to be the same as username to login
+        PhotonNetwork.player.name = PlayFabDataStore.userName;
         Debug.Log("Joined Lobby");
         debugText.text = "Host a game (Your room name will be the same as your username)"
             +"\n Join a game(Type the name of the user who is hosting a game)"

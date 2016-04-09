@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class GameManager : MonoBehaviour {
     public Transform muzzleTransform;
     public Material hitObjectMaterial;
     public int hitAsteroidMaterialIndex;
+    public GameObject pilotPanel;
+    public Text scavengerList;
     GameObject asteroid;
     GameObject resource;
     GameObject returnButton;
@@ -33,10 +36,28 @@ public class GameManager : MonoBehaviour {
         {
             returnButton.SetActive(false);
         }
+        if(PhotonNetwork.isMasterClient)
+        {
+            pilotPanel.SetActive(true);
+            
+        }
         StartCoroutine(SpawnObject());
     }
 
+    void Update()
+    {
+        if (PhotonNetwork.isMasterClient)
+        {
+           
+                string playerList = "Ready to fly:\n";
+                foreach (PhotonPlayer player in PhotonNetwork.otherPlayers)
+                {
+                    playerList += player.name + "\n";
+                }
+                scavengerList.text = playerList;
 
+        }
+    }
     IEnumerator SpawnObject()
     {
         if (PhotonNetwork.isMasterClient)
@@ -65,7 +86,16 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(SpawnObject());
 
     }
-
+   
+    public void ReturnToBase()
+    {
+        
+            Debug.Log("Ending Game");
+      
+            PhotonNetwork.LoadLevel("Login");
+        
+       
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         ///nothing

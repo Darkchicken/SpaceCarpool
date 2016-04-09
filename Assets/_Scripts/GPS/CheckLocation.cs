@@ -95,6 +95,7 @@ public class CheckLocation : MonoBehaviour {
         lastUpdate = currentTime = Input.location.lastData.timestamp;
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
+        debugObject.SetActive(false);
     }
 
     void Update()
