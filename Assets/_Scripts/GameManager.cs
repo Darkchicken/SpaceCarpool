@@ -49,12 +49,34 @@ public class GameManager : MonoBehaviour {
         if (PhotonNetwork.isMasterClient)
         {
            
-                string playerList = "Ready to fly:\n";
+                string playerList = "Scavengers On Board:\n";
                 foreach (PhotonPlayer player in PhotonNetwork.otherPlayers)
                 {
                     playerList += player.name + "\n";
                 }
                 scavengerList.text = playerList;
+            ///DEBUG CODE, REMOVE LATER
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                GameObject player = GameObject.Find("Player(Clone)");
+                pilotPanel.SetActive(false);
+                //enable scripts only for the controlling player
+                player.GetComponent<PlayerCombatManager>().enabled = true;
+                player.GetComponent<CameraController>().enabled = true;
+                player.GetComponent<CheckLocation>().enabled = true;
+                #if UNITY_STANDALONE
+
+                player.GetComponent<MouseLook>().enabled = true;
+
+                #endif
+
+                #if UNITY_EDITOR
+
+                player.GetComponent<MouseLook>().enabled = true;
+
+                #endif
+                /////////////////////////////////////////////////////
+            }
 
         }
     }
