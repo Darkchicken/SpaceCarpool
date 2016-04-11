@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour {
         */
         if (Application.isMobilePlatform)
         {
-            transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, Input.gyro.rotationRateUnbiased.z);
+            transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, 0);//Input.gyro.rotationRateUnbiased.z
             playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
         }
     }
