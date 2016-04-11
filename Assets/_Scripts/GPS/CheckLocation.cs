@@ -103,8 +103,11 @@ public class CheckLocation : MonoBehaviour {
         //toggles debug text on and off
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            //activate debug text
-            debugObject.SetActive(!debugObject.activeSelf);
+            if (debugObject != null)
+            {
+                //activate debug text
+                debugObject.SetActive(!debugObject.activeSelf);
+            }
 
         }
         if (updatePosition == true)
