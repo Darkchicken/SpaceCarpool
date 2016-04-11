@@ -42,6 +42,13 @@ public class PlayFabUserLogin : MonoBehaviour
     {
         if (waitingForPlayers)
         {
+            //for testing///////////////////////////////////
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                beginButton.SetActive(true);
+            }
+           //////////////////////////////////////////////////
+           
             if (PhotonNetwork.otherPlayers.Length > 0)
             {
                 string playerList = "Ready to fly:\n";
@@ -96,8 +103,7 @@ public class PlayFabUserLogin : MonoBehaviour
             backButton.SetActive(true);
             waitingForPlayers = true;
           
-            //for testing
-            beginButton.SetActive(true);
+           
 
 
 
