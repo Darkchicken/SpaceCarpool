@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class PlayerCombatManager : MonoBehaviour {
 
+    public AudioSource laserSound;
+    public AudioSource tractorSound;
+    
     public Vector3 muzzleOffset;
     public float fireRate = 0.5f;
     public float beamCatchTime = 2;
@@ -60,7 +63,7 @@ public class PlayerCombatManager : MonoBehaviour {
                 {
                     Debug.Log(PlayFabDataStore.laserBoltColorIndex);
                     GetComponent<PhotonView>().RPC("InstantiateLaserBolt", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex);
-
+                    laserSound.Play();
                     if (Physics.Raycast(ray, out hit, 1000))
                     {
                         nextFire = 0;
@@ -87,6 +90,7 @@ public class PlayerCombatManager : MonoBehaviour {
                     {
                         beamLength = Vector3.Distance(muzzleTransform.position, hit.transform.position);
                         GetComponent<PhotonView>().RPC("InstantiateTractorBeam", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex, beamLength);
+                        tractorSound.Play();
                     }
                         
                 }   
@@ -117,6 +121,11 @@ public class PlayerCombatManager : MonoBehaviour {
                 }
 
            }
+           
+        }
+        else
+        {
+            tractorSound.Stop();
         }
     }
 

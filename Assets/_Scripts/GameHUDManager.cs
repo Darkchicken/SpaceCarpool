@@ -4,6 +4,7 @@ using System.Collections;
 
 public class GameHUDManager : MonoBehaviour {
 
+    public AudioSource resourceSound;
     public static GameHUDManager gameHudManager;
     public Toggle weaponToggle;
     public Text scoreText;
@@ -51,6 +52,7 @@ public class GameHUDManager : MonoBehaviour {
 
     public void SetScore()
     {
+        resourceSound.Play();
         scoreText.text = "Score: " + PlayFabDataStore.playerScore;
     }
 }
