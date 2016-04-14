@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
         if (PhotonNetwork.isMasterClient)
         {
            
-                string playerList = "Scavengers On Board:\n";
+                string playerList = "";
                 foreach (PhotonPlayer player in PhotonNetwork.otherPlayers)
                 {
                     playerList += player.name + "\n";
