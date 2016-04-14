@@ -86,20 +86,17 @@ public class GameManager : MonoBehaviour {
         {
             int randomNumber = Random.Range(0, 1000);
 
-            if (randomNumber <= 500) //Spawn Asteroid
+            if (randomNumber <= 950) //Spawn Asteroid
             {
                 spawnLocation = new Vector3(Random.Range(spawnArea.transform.position.x - spawnArea.size.x / 2, spawnArea.transform.position.x + spawnArea.size.x / 2),
                 Random.Range(spawnArea.transform.position.y - spawnArea.size.y / 2, spawnArea.transform.position.y + spawnArea.size.y / 2), spawnArea.transform.position.z);
                 GameObject asteroidObject = PhotonNetwork.Instantiate("Asteroid", spawnLocation, Quaternion.identity, 0) as GameObject;
             }
-            else if (randomNumber <= 0) //Spawn Resource
+            else if (randomNumber <= 1000) //Spawn TrashBag
             {
                 spawnLocation = new Vector3(Random.Range(spawnArea.transform.position.x - spawnArea.size.x / 2, spawnArea.transform.position.x + spawnArea.size.x / 2),
                 Random.Range(spawnArea.transform.position.y - spawnArea.size.y / 2, spawnArea.transform.position.y + spawnArea.size.y / 2), spawnArea.transform.position.z);
-                GameObject resourceObject = PhotonNetwork.Instantiate("Resource", spawnLocation, Quaternion.identity,0) as GameObject;
-            }
-            else if (randomNumber <= 1000) // Spawn Fuel
-            {
+                GameObject resourceObject = PhotonNetwork.Instantiate("TrashBag", spawnLocation, Quaternion.identity,0) as GameObject;
             }
         }
 
