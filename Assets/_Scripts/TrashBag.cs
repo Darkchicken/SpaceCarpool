@@ -43,7 +43,7 @@ public class TrashBag : MonoBehaviour
     }
 
     [PunRPC]
-    public void SetDetails(int meshNumber, int materialNum, Vector3 newScale, float newSpeed)
+    public void SetDetails(Vector3 newScale, float newSpeed)
     {
         transform.localScale = newScale;
         GetComponent<MoveObjects>().speed = newSpeed;
