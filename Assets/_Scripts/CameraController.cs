@@ -9,6 +9,15 @@ public class CameraController : MonoBehaviour {
     Quaternion initialRotation;
 
 	public int speed;
+
+    public float minX = -30F;
+    public float maxX = 30F;
+    public float minY = -60F;
+    public float maxY = 60F;
+
+    float rotationX = 0F;
+    float rotationY = 0F;
+
 	private Camera playerCamera;
 
     void Start()
@@ -35,10 +44,22 @@ public class CameraController : MonoBehaviour {
         */
         if (Application.isMobilePlatform)
         {
-            transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, 0);//Input.gyro.rotationRateUnbiased.z
+            rotationX += -Input.gyro.rotationRateUnbiased.x;
+            rotationY += -Input.gyro.rotationRateUnbiased.y;
+
+            rotationX = Mathf.Clamp(rotationX, minX, maxX);
+            rotationY = Mathf.Clamp(rotationY, minY, maxY);
+
+            Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.right);
+            Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.up);
+
+            transform.localRotation = initialRotation * xQuaternion * yQuaternion;
+
+            //transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, 0);//Input.gyro.rotationRateUnbiased.z
             playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
         }
     }
+
     void Update () {
 
         /*
