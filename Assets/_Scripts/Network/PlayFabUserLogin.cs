@@ -75,7 +75,8 @@ public class PlayFabUserLogin : MonoBehaviour
     {
         errorText.enabled = false;
         createAccount.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        login.gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 
     public void Host()
