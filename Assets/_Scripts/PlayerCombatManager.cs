@@ -74,7 +74,7 @@ public class PlayerCombatManager : MonoBehaviour {
                             Debug.Log("hit count: " + counter++);
                             ApplyDamage();
                         }
-                        if (hit.transform.tag == "Resource")
+                        if (hit.transform.CompareTag("Resource") || hit.transform.CompareTag("TrashBag"))
                         {
                             HitObject();
                         }
@@ -86,7 +86,7 @@ public class PlayerCombatManager : MonoBehaviour {
             {
                 if (Physics.Raycast(ray, out hit, 1000))
                 {
-                    if (hit.transform.tag == "Resource")
+                    if (hit.transform.CompareTag("Resource") || hit.transform.CompareTag("TrashBag"))
                     {
                         beamLength = Vector3.Distance(muzzleTransform.position, hit.transform.position);
                         GetComponent<PhotonView>().RPC("InstantiateTractorBeam", PhotonTargets.All, muzzleTransform.position, muzzleTransform.rotation, PlayFabDataStore.laserBoltColorIndex, beamLength);
@@ -112,6 +112,14 @@ public class PlayerCombatManager : MonoBehaviour {
                         if(beamTimer >= beamCatchTime )
                         {
                             CatchResource();
+                        }
+                    }
+                    else
+                    if (hit.transform.tag == "TrashBag")
+                    {
+                        if (beamTimer >= beamCatchTime)
+                        {
+                            CatchTrashBag();
                         }
                     }
                     else
@@ -147,5 +155,10 @@ public class PlayerCombatManager : MonoBehaviour {
     void CatchResource()
     {
         hit.transform.gameObject.GetComponent<PhotonView>().RPC("ReceiveResource", PhotonTargets.All);
+    }
+
+    void CatchTrashBag()
+    {
+        hit.transform.gameObject.GetComponent<PhotonView>().RPC("ReceiveTrashBag", PhotonTargets.All);
     }
 }

@@ -35,8 +35,8 @@ public class MouseLook : MonoBehaviour
 
             Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
             Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, -Vector3.right);
-            Debug.Log("X - Q :" + xQuaternion);
-            Debug.Log("Y - Q :" + yQuaternion);
+            //Debug.Log("X - Q :" + xQuaternion);
+            //Debug.Log("Y - Q :" + yQuaternion);
 
             transform.localRotation = originalRotation * xQuaternion * yQuaternion;
             /*if((xQuaternion.y >= -0.5f && xQuaternion.y <= 0.5f) && (yQuaternion.x >= -0.3f && yQuaternion.x <= 0.3f))

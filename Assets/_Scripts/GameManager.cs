@@ -39,9 +39,19 @@ public class GameManager : MonoBehaviour {
         if(PhotonNetwork.isMasterClient)
         {
             pilotPanel.SetActive(true);
-            
+            GetComponent<PhotonView>().RPC("SetInitialValues", PhotonTargets.All);
+
         }
         StartCoroutine(SpawnObject());
+    }
+
+    [PunRPC]
+    void SetInitialValues()
+    {
+        Debug.Log("Initial Values Set!");
+        PlayFabDataStore.shipHealth = PlayFabDataStore.shipHealthMax;
+        PlayFabDataStore.shipFuel = PlayFabDataStore.shipFuelMax;
+        GameHUDManager.gameHudManager.HudUpdate();
     }
 
     void Update()

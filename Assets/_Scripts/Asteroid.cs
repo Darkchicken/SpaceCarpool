@@ -13,6 +13,7 @@ public class Asteroid : MonoBehaviour
     private int MaterialIndex;
 
     private static int counter = 0;
+    private int damage;
 
 
     void Awake()
@@ -49,9 +50,13 @@ public class Asteroid : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Destination")
+        if (other.CompareTag("Destination"))
         {
             Destroy(gameObject);
+        }
+        else if(other.CompareTag("Ship"))
+        {
+            other.GetComponent<ShipControl>().TakeDamage(damage);
         }
     }
 
@@ -116,6 +121,7 @@ public class Asteroid : MonoBehaviour
         transform.localScale = newScale;
         GetComponent<MoveObjects>().speed = newSpeed;
         health = newHealth;
+        damage = Mathf.CeilToInt(newScale.x) * 10;
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

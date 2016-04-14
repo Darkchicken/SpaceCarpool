@@ -19,6 +19,11 @@ public class PlayFabDataStore : MonoBehaviour
 
     public static int laserBoltColorIndex;
 
+    public static int shipFuel;
+    public static int shipFuelMax = 100;
+    public static int shipHealth;
+    public static int shipHealthMax = 100;
+
     public static int playerScore = 0;
 
     /*

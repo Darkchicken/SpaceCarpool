@@ -4,21 +4,31 @@ using System.Collections;
 
 public class GameHUDManager : MonoBehaviour {
 
+    delegate void HUDUpdateDelegate();
+    HUDUpdateDelegate hudUpdateDelegate;
+
+
     public AudioSource resourceSound;
     public static GameHUDManager gameHudManager;
     public Toggle weaponToggle;
     public Text scoreText;
+    public Image healthImage;
+    public Image fuelImage;
     public Image crosshairBlue;
     public Image crosshairRed;
 
     private GameObject player;
+
+    
 
 
     void Start()
     {
         gameHudManager = this;
         //player = GameObject.FindGameObjectWithTag("Player");
-        SetScore();
+        hudUpdateDelegate += SetScore;
+        hudUpdateDelegate += SetHealth;
+        hudUpdateDelegate += SetFuel;
     }
 #if UNITY_EDITOR
     void Update()
@@ -28,6 +38,7 @@ public class GameHUDManager : MonoBehaviour {
             weaponToggle.isOn = !weaponToggle.isOn;
 
         }
+
     }
 #endif
     public void SetPlayer(GameObject p)
@@ -50,9 +61,24 @@ public class GameHUDManager : MonoBehaviour {
         }
     }
 
-    public void SetScore()
+    public void HudUpdate()
+    {
+        hudUpdateDelegate();
+    }
+
+    void SetScore()
     {
         resourceSound.Play();
         scoreText.text = "Score: " + PlayFabDataStore.playerScore;
+    }
+
+    void SetHealth()
+    {
+        healthImage.fillAmount = (float)PlayFabDataStore.shipHealth / (float)PlayFabDataStore.shipHealthMax;
+    }
+
+    void SetFuel()
+    {
+        fuelImage.fillAmount = (float)PlayFabDataStore.shipFuel / (float)PlayFabDataStore.shipFuelMax;
     }
 }

@@ -1,25 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class Resource : MonoBehaviour {
-
-    public List<Mesh> resourceMeshes;
-    public List<Material> resourceMaterials;
+public class TrashBag : MonoBehaviour
+{
 
     void Start()
     {
         if (PhotonNetwork.isMasterClient)
         {
-            int selector = Random.Range(0, resourceMeshes.Count);
-            GetComponent<MeshFilter>().mesh = resourceMeshes[selector];
-            int meshNum = selector;
-            GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
-            int matNum = GameManager.gameManager.hitAsteroidMaterialIndex;
-            float resourceScale = Random.Range(0.05f, 0.1f);
+            float resourceScale = Random.Range(0.1f, 1f);
             transform.localScale = new Vector3(resourceScale, resourceScale, resourceScale);
             GetComponent<MoveObjects>().speed = Random.Range(5, 20);
-            GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, meshNum, matNum, transform.localScale, GetComponent<MoveObjects>().speed);
+            GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, transform.localScale, GetComponent<MoveObjects>().speed);
         }
     }
 
@@ -34,17 +26,17 @@ public class Resource : MonoBehaviour {
     }
 
     [PunRPC]
-    public void ReceiveResource()
+    public void ReceiveTrashBag()
     {
-        //Points will be granted
-        PlayFabDataStore.playerScore += 10;
+        //Fuel will be granted
+        PlayFabDataStore.shipFuel += 2;
         GameHUDManager.gameHudManager.HudUpdate();
         Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Destination")
+        if (other.tag == "Destination")
         {
             Destroy(gameObject);
         }
@@ -53,10 +45,6 @@ public class Resource : MonoBehaviour {
     [PunRPC]
     public void SetDetails(int meshNumber, int materialNum, Vector3 newScale, float newSpeed)
     {
-        GetComponent<MeshFilter>().mesh = resourceMeshes[meshNumber];
-        GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
-
-        GetComponent<MeshRenderer>().material = resourceMaterials[materialNum];
         transform.localScale = newScale;
         GetComponent<MoveObjects>().speed = newSpeed;
     }
