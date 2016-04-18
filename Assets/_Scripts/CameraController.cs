@@ -20,6 +20,8 @@ public class CameraController : MonoBehaviour {
 
 	private Camera playerCamera;
 
+    bool gyroActive = true;
+
     void Start()
     {
         GameObject.Find("GameHUD").GetComponent<GameHUDManager>().SetPlayer(this.gameObject);
@@ -42,7 +44,7 @@ public class CameraController : MonoBehaviour {
             transform.rotation = initialRotation;
         }
         */
-        if (Application.isMobilePlatform)
+        if (Application.isMobilePlatform && gyroActive)
         {
             rotationX += -Input.gyro.rotationRateUnbiased.x;
             rotationY += -Input.gyro.rotationRateUnbiased.y;
@@ -101,7 +103,9 @@ public class CameraController : MonoBehaviour {
     }
     public void ResetView()
     {
+        gyroActive = false;
         transform.position = initialPosition;
         transform.rotation = initialRotation;
+        gyroActive = true;
     }
 }

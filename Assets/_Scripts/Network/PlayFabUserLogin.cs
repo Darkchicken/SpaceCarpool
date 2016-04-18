@@ -36,7 +36,15 @@ public class PlayFabUserLogin : MonoBehaviour
     void Awake()
     {
         playFabUserLogin = this;
+#if UNITY_IPHONE
+   Screen.sleepTimeout = SleepTimeout.NeverSleep;
+#endif
+
+#if UNITY_ANDROID
+   Screen.sleepTimeout = SleepTimeout.NeverSleep;
+#endif
        
+
     }
     void Update()
     {
