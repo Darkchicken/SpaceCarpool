@@ -33,7 +33,7 @@ public class MoveObjects : MonoBehaviour {
     {
         direction = (endPosition - transform.position).normalized;
         masterUpdated = true;
-        Debug.Log("MasterUpdated: " + masterUpdated);
+        //Debug.Log("MasterUpdated: " + masterUpdated);
     }
 
     public Vector3 GetDirection()
