@@ -59,6 +59,7 @@ public class PhotonMatchmaker : PunBehaviour
             {
                 Debug.Log("You are near host, join is complete");
                 debugText.text = "You are near host, join is complete";
+                BeginGame();
             }
             //if they are not, leave room
             else
@@ -68,12 +69,12 @@ public class PhotonMatchmaker : PunBehaviour
                 PhotonNetwork.LeaveRoom();
             }
         }
-        /*
+        
         else//if you are the host
         {
-            locationHandler.GetComponent<CheckLocation>().StoreMasterData();
+            BeginGame();
         }
-        */
+        
         
 
 
@@ -93,6 +94,20 @@ public class PhotonMatchmaker : PunBehaviour
         //GameObject player = PhotonNetwork.Instantiate("PlayerCharacter", spawnPoint.position, Quaternion.identity, 0);
         //player.GetComponent<PlayerCombatManager>().enabled = true;
 
+    }
+    public void BeginGame()
+    {
+        if (PhotonNetwork.room != null)
+        {
+            Debug.Log("Starting Game");
+            debugText.text = "Starting game in room named: " + PhotonNetwork.room.name;
+            PhotonNetwork.LoadLevel("TestSpawning");
+        }
+        else
+        {
+            Debug.Log("Cannot begin, must host or join a room first");
+            debugText.text = "Cannot begin, must host or join a room first";
+        }
     }
     void OnPlayerJoinedRoom()
     {

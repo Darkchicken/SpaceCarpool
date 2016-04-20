@@ -104,6 +104,9 @@ public class PlayFabUserLogin : MonoBehaviour
             //Set player index for coloring
             Debug.Log("player size " + PhotonNetwork.playerList.Length);
             PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
+
+           
+            /*
             hostInfo.text = "Waiting for teammates...";
             instructionsButton.SetActive(false);
             hostButton.SetActive(false);
@@ -111,6 +114,7 @@ public class PlayFabUserLogin : MonoBehaviour
             joinTextField.SetActive(false);
             backButton.SetActive(true);
             waitingForPlayers = true;
+            */
           
            
 
@@ -122,7 +126,20 @@ public class PlayFabUserLogin : MonoBehaviour
             debugText.text = "Failed to create room";
         }
     }
-
+    public void BeginGame()
+    {
+        if (PhotonNetwork.room != null)
+        {
+            Debug.Log("Starting Game");
+            debugText.text = "Starting game in room named: " + PhotonNetwork.room.name;
+            PhotonNetwork.LoadLevel("TestSpawning");
+        }
+        else
+        {
+            Debug.Log("Cannot begin, must host or join a room first");
+            debugText.text = "Cannot begin, must host or join a room first";
+        }
+    }
     public void Join()
     {
 
@@ -145,20 +162,7 @@ public class PlayFabUserLogin : MonoBehaviour
         //PhotonNetwork.JoinRandomRoom();
         //
     }
-    public void BeginGame()
-    {
-        if (PhotonNetwork.room != null)
-        {
-            Debug.Log("Starting Game");
-            debugText.text = "Starting game in room named: "+ PhotonNetwork.room.name;
-            PhotonNetwork.LoadLevel("TestSpawning");
-        }
-        else
-        {
-            Debug.Log("Cannot begin, must host or join a room first");
-            debugText.text = "Cannot begin, must host or join a room first";
-        }
-    }
+    
     public void GoBack()
     {
         if (PhotonNetwork.room != null)
@@ -181,7 +185,8 @@ public class PlayFabUserLogin : MonoBehaviour
         instructionPanel.SetActive(true);
 
     }
-   
- 
+    
+
+
 
 }
