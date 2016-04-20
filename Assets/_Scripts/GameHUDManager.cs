@@ -8,7 +8,7 @@ public class GameHUDManager : MonoBehaviour {
     HUDUpdateDelegate hudUpdateDelegate;
 
 
-    public AudioSource resourceSound;
+   
     public static GameHUDManager gameHudManager;
     public Toggle weaponToggle;
     public Text scoreText;
@@ -68,7 +68,7 @@ public class GameHUDManager : MonoBehaviour {
 
     void SetScore()
     {
-        resourceSound.Play();
+        
         scoreText.text = "Score: " + PlayFabDataStore.playerScore;
     }
 

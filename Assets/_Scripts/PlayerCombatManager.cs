@@ -6,7 +6,8 @@ public class PlayerCombatManager : MonoBehaviour {
 
     public AudioSource laserSound;
     public AudioSource tractorSound;
-    
+    public AudioSource resourceSound;
+
     public Vector3 muzzleOffset;
     public float fireRate = 0.5f;
     public float beamCatchTime = 2;
@@ -154,11 +155,13 @@ public class PlayerCombatManager : MonoBehaviour {
 
     void CatchResource()
     {
+        resourceSound.Play();
         hit.transform.gameObject.GetComponent<PhotonView>().RPC("ReceiveResource", PhotonTargets.All);
     }
 
     void CatchTrashBag()
     {
+        resourceSound.Play();
         hit.transform.gameObject.GetComponent<PhotonView>().RPC("ReceiveTrashBag", PhotonTargets.All);
     }
 }
