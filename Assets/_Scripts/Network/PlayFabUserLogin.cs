@@ -105,19 +105,6 @@ public class PlayFabUserLogin : MonoBehaviour
             Debug.Log("player size " + PhotonNetwork.playerList.Length);
             PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
 
-           
-            /*
-            hostInfo.text = "Waiting for teammates...";
-            instructionsButton.SetActive(false);
-            hostButton.SetActive(false);
-            joinButton.SetActive(false);
-            joinTextField.SetActive(false);
-            backButton.SetActive(true);
-            waitingForPlayers = true;
-            */
-          
-           
-
 
 
         }

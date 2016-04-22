@@ -10,7 +10,7 @@ public class TrashBag : MonoBehaviour
         {
             float resourceScale = Random.Range(0.1f, 1f);
             transform.localScale = new Vector3(resourceScale, resourceScale, resourceScale);
-            GetComponent<MoveObjects>().speed = Random.Range(5, 20);
+            GetComponent<MoveObjects>().speed = Random.Range(5, 40);
             GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, transform.localScale, GetComponent<MoveObjects>().speed);
         }
     }

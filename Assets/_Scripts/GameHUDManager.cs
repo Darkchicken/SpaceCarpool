@@ -12,10 +12,12 @@ public class GameHUDManager : MonoBehaviour {
     public static GameHUDManager gameHudManager;
     public Toggle weaponToggle;
     public Text scoreText;
+    public Text scavengerList;
     public Image healthImage;
     public Image fuelImage;
     public Image crosshairBlue;
     public Image crosshairRed;
+    public GameObject pilotPanel;
 
     private GameObject player;
 
@@ -29,18 +31,37 @@ public class GameHUDManager : MonoBehaviour {
         hudUpdateDelegate += SetScore;
         hudUpdateDelegate += SetHealth;
         hudUpdateDelegate += SetFuel;
+
+        pilotPanel.SetActive(true);
     }
-#if UNITY_EDITOR
+
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (PhotonNetwork.isMasterClient)
         {
-            weaponToggle.isOn = !weaponToggle.isOn;
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                weaponToggle.isOn = !weaponToggle.isOn;
+
+            }
+#endif
+
+            string playerList = "";
+            foreach (PhotonPlayer player in PhotonNetwork.otherPlayers)
+            {
+                playerList += player.name + "\n";
+            }
+            scavengerList.text = playerList;
+            ///DEBUG CODE, REMOVE LATER
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+
+                /////////////////////////////////////////////////////
+            }
 
         }
-
     }
-#endif
     public void SetPlayer(GameObject p)
     {
         player = p;
@@ -80,5 +101,29 @@ public class GameHUDManager : MonoBehaviour {
     void SetFuel()
     {
         fuelImage.fillAmount = (float)PlayFabDataStore.shipFuel / (float)PlayFabDataStore.shipFuelMax;
+    }
+
+    public void StartButtonClicked()
+    {
+        
+        GameObject player = GameObject.Find("Player(Clone)");
+        pilotPanel.SetActive(false);
+        //enable scripts only for the controlling player
+        player.GetComponent<PlayerCombatManager>().enabled = true;
+        player.GetComponent<CameraController>().enabled = true;
+        player.GetComponent<CheckLocation>().enabled = true;
+#if UNITY_STANDALONE
+
+        player.GetComponent<MouseLook>().enabled = true;
+
+#endif
+
+#if UNITY_EDITOR
+
+        player.GetComponent<MouseLook>().enabled = true;
+
+#endif
+
+        GameManager.gameManager.isGameStarted = true;
     }
 }

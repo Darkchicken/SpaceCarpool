@@ -8,48 +8,37 @@ using UnityEngine.SceneManagement;
 public class PhotonCalls : PunBehaviour
 {
 
-    GameObject spawnPoint;
-    public Text debugText;
-    // static string friendRoomName = null; // get this directly from playfabdatastore
-
-    void Awake()
-    {
-       
-    }
     void Start()
     {
-        //spawnPoint = GameObject.Find("SpawnPoint");
-        //GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-
-
-        //assigns a number from 1-6
-        string spawnpointName = "SpawnPoint" + (PlayFabDataStore.laserBoltColorIndex+1);
-       
-
-        spawnPoint = GameObject.Find(spawnpointName);
-        //instantiate player on all clients
-        GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        //check if this is the player's view and if they are not the master pilot
-        if(!PhotonNetwork.isMasterClient && player.GetComponent<PhotonView>().isMine)
+        if (PhotonNetwork.isMasterClient)
         {
-            //enable scripts only for the controlling player
-            player.GetComponent<PlayerCombatManager>().enabled = true;
-            player.GetComponent<CameraController>().enabled = true;
-            player.GetComponent<CheckLocation>().enabled = true;
+            string spawnpointName = "SpawnPoint" + (PlayFabDataStore.laserBoltColorIndex + 1);
+            GameObject spawnPoint = GameObject.Find(spawnpointName);
+            //instantiate player on all clients
+            Debug.Log(spawnpointName);
+            GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
+            if (!PhotonNetwork.isMasterClient && player.GetComponent<PhotonView>().isMine)
+            {
+                //enable scripts only for the controlling player
+                player.GetComponent<PlayerCombatManager>().enabled = true;
+                player.GetComponent<CameraController>().enabled = true;
+                player.GetComponent<CheckLocation>().enabled = true;
 #if UNITY_STANDALONE
-            
+
                 player.GetComponent<MouseLook>().enabled = true;
-            
+
 #endif
 
 #if UNITY_EDITOR
-            
-                player.GetComponent<MouseLook>().enabled = true;
-            
-#endif
 
+                player.GetComponent<MouseLook>().enabled = true;
+
+#endif
+                
+            }
         }
     }
+        
     public static void NewRoom()
     {
 
@@ -89,28 +78,15 @@ public class PhotonCalls : PunBehaviour
 
        
     }
-    
+
     //upon joining a new room, output the room name
     public override void OnJoinedRoom()
     {
-       
-        /*
-        Debug.Log("At Least this works!");
-       
-        spawnPoint = GameObject.Find("SpawnPoint");
-      
-        //instantiate player on all clients
-        GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        //enable scripts only for the controlling player
-        player.GetComponent<PlayerCombatManager>().enabled = true;
-        player.GetComponent<CameraController>().enabled = true;
-        player.GetComponent<CheckLocation>().enabled = true;
-        */
-
-
-
+        Debug.Log("Onjoined room");
+        PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
+        GameManager.gameManager.InitializeThePlayer();
     }
-    
+
 
 }
 

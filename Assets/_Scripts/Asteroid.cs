@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class Asteroid : MonoBehaviour
 {
     public int health;
-    Vector3 objectPos;
-    Quaternion objectRot;
     public List<Mesh> asteroidMeshes;
     public List<Material> asteroidMaterials;
+    public Transform objectPoolingTransform;
 
-    private int MaterialIndex;
+    private int materialIndex;
+    private PhotonView photonView;
 
     private static int counter = 0;
     private int damage;
@@ -18,10 +18,19 @@ public class Asteroid : MonoBehaviour
 
     void Awake()
     {
-        objectPos = transform.position;
-        objectRot = Quaternion.identity;
+        photonView = GetComponent<PhotonView>();
+        GameManager.gameManager.poolObjectList.Add(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        tag = "Asteroid";
         if (PhotonNetwork.isMasterClient)
         {
+            Debug.Log("Asteroid Enabled!");
+            GameManager.gameManager.photonView.RPC("EnableObject", PhotonTargets.Others, photonView.viewID, transform.position);
+
             int selector = Random.Range(0, asteroidMeshes.Count);
             GetComponent<MeshFilter>().mesh = asteroidMeshes[selector];
             int meshNum = selector;
@@ -29,30 +38,33 @@ public class Asteroid : MonoBehaviour
             selector = Random.Range(0, asteroidMaterials.Count);
             GetComponent<MeshRenderer>().material = asteroidMaterials[selector];
             int matNum = selector;
-            MaterialIndex = selector;
+            materialIndex = selector;
             float asteroidScale = Random.Range(0.1f, 2);
             transform.localScale = new Vector3(asteroidScale, asteroidScale, asteroidScale);
             GetComponent<MoveObjects>().speed = Random.Range(25, 100);
             health = (int)(100 * asteroidScale * 3);
-            GetComponent<PhotonView>().RPC("SetDetails",PhotonTargets.AllBufferedViaServer, meshNum,matNum, transform.localScale, GetComponent<MoveObjects>().speed, health);
+            photonView.RPC("SetDetails",PhotonTargets.AllBufferedViaServer, meshNum,matNum, transform.position, transform.localScale, GetComponent<MoveObjects>().speed, health);
+            photonView.RPC("SetDirection", PhotonTargets.AllViaServer, GetComponent<MoveObjects>().endPosition);
         }
 
         
     }
+
+    [PunRPC]
+    void EnableAsteroid()
+    {
+        //.SetActive(true);
+    }
+
     void Update()
     {
-       /* if (!PhotonNetwork.isMasterClient)
-        {
-            transform.position = Vector3.Lerp(transform.position, objectPos, 0.1f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, objectRot, 0.1f);
-        }*/
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Destination"))
         {
-            Destroy(gameObject);
+            DestroyAsteroid();
         }
         else if(other.CompareTag("Ship"))
         {
@@ -78,42 +90,29 @@ public class Asteroid : MonoBehaviour
             
             if(PhotonNetwork.isMasterClient)
             {
-                GameObject resource = PhotonNetwork.Instantiate("Resource", transform.position, transform.rotation, 0) as GameObject;
-
-                //resource.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
-                GameManager.gameManager.hitAsteroidMaterialIndex = MaterialIndex;
-                Debug.Log("MAT SET index " + MaterialIndex);
+                //GameObject resource = PhotonNetwork.Instantiate("Resource", transform.position, transform.rotation, 0) as GameObject;
+                GetComponent<Resource>().OnChangeToResource(materialIndex);
+                GetComponent<MoveObjects>().ResourceLoad();
+                GameManager.gameManager.hitAsteroidMaterialIndex = materialIndex;
             }
 
-            DestroyAsteroid();
+            //DestroyAsteroid();
         }
-
-        /*if (PhotonNetwork.isMasterClient)
-        {
-            Debug.Log("Asteroid Took Damage!");
-            if (health - getDamage > 0)
-            {
-                health -= getDamage;
-            }
-            else
-            {
-
-                GetComponent<PhotonView>().RPC("DestroyAsteroid", PhotonTargets.All);
-                PhotonNetwork.Destroy(gameObject);
-            }
-        }*/
     }
 
     void DestroyAsteroid()
     {
-        Debug.Log("AST DEST");
-        Destroy(gameObject);
+        Debug.Log("ASteroid Destroyed");
+        gameObject.SetActive(false);
+        gameObject.transform.position = GameManager.gameManager.objectPoolingTransform.position;
     }
 
 
     [PunRPC]
-    public void SetDetails(int meshNumber,int materialNum, Vector3 newScale, float newSpeed, int newHealth)
+    public void SetDetails(int meshNumber,int materialNum, Vector3 position, Vector3 newScale, float newSpeed, int newHealth)
     {
+        Debug.Log("SETDETAILS");
+        transform.position = position;
         GetComponent<MeshFilter>().mesh = asteroidMeshes[meshNumber];
         GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
       
@@ -122,33 +121,12 @@ public class Asteroid : MonoBehaviour
         GetComponent<MoveObjects>().speed = newSpeed;
         health = newHealth;
         damage = Mathf.CeilToInt(newScale.x) * 10;
+        GetComponent<MoveObjects>().masterUpdated = true;
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        /*
-        if (stream.isWriting)
-        {
-            if (PhotonNetwork.isMasterClient)
-            {
-                //We own this player: send the others our data
-                stream.SendNext(transform.position);
-                stream.SendNext(transform.rotation);
-            }
-
-        }
-        else
-        {
-            if (!PhotonNetwork.isMasterClient)
-            {
-                //Network player, receive data
-                objectPos = (Vector3)stream.ReceiveNext();
-                objectRot = (Quaternion)stream.ReceiveNext();
-            }
-
-
-        }
-        */
+        //
     }
 
 }

@@ -30,7 +30,11 @@ public class PlayerCombatManager : MonoBehaviour {
     {
         cameraPosition = Camera.main.transform.position + muzzleOffset;
         muzzleTransform = GameManager.gameManager.muzzleTransform;
+        
     }
+
+    
+
     [PunRPC]
     void InstantiateLaserBolt(Vector3 muzzlePos, Quaternion muzzleRot, int laserBoltColorIndex)
     {
@@ -75,7 +79,7 @@ public class PlayerCombatManager : MonoBehaviour {
                             Debug.Log("hit count: " + counter++);
                             ApplyDamage();
                         }
-                        if (hit.transform.CompareTag("Resource") || hit.transform.CompareTag("TrashBag"))
+                        else if (hit.transform.CompareTag("Resource") || hit.transform.CompareTag("TrashBag"))
                         {
                             HitObject();
                         }

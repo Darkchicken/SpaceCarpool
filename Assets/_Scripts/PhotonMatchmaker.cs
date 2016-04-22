@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class PhotonMatchmaker : PunBehaviour
 {
     public GameObject locationHandler;
-    //public Transform spawnPoint;
-    //public Transform enemySpawnPoint;
+
     public Text debugText;
     void Start()
     {
@@ -38,18 +37,14 @@ public class PhotonMatchmaker : PunBehaviour
 
     }
 
+    
     public override void OnJoinedRoom()
     {
-        //PlayFabUserLogin.playfabUserLogin.Authentication("SUCCESS!", 2); //change the text of authentication text
         Debug.Log("Join Room Successfully!");
         Debug.Log("Room name is: "+PhotonNetwork.room);
         debugText.text = "Join Room Successfully! Room name is: " + PhotonNetwork.room
             +"\n Current longitude = "+ locationHandler.GetComponent<CheckLocation>().myLon 
             +"\n Current latitude = " + locationHandler.GetComponent<CheckLocation>().myLat;
-
-        //Set player index for coloring
-        PlayFabDataStore.laserBoltColorIndex = PhotonNetwork.playerList.Length - 1;
-        Debug.Log("player size " + PhotonNetwork.playerList.Length);
 
         //if you are not the host
         if (!PhotonNetwork.isMasterClient)

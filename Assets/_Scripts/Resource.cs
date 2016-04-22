@@ -7,19 +7,21 @@ public class Resource : MonoBehaviour {
     public List<Mesh> resourceMeshes;
     public List<Material> resourceMaterials;
 
-    void Start()
+    public void OnChangeToResource(int materialNumber)
     {
+        Debug.Log("ITS A RESOURCE");
+        
         if (PhotonNetwork.isMasterClient)
         {
             int selector = Random.Range(0, resourceMeshes.Count);
             GetComponent<MeshFilter>().mesh = resourceMeshes[selector];
             int meshNum = selector;
             GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
-            int matNum = GameManager.gameManager.hitAsteroidMaterialIndex;
+            //int matNum = GameManager.gameManager.hitAsteroidMaterialIndex;
             float resourceScale = Random.Range(0.05f, 0.1f);
             transform.localScale = new Vector3(resourceScale, resourceScale, resourceScale);
             GetComponent<MoveObjects>().speed = Random.Range(5, 20);
-            GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, meshNum, matNum, transform.localScale, GetComponent<MoveObjects>().speed);
+            GetComponent<PhotonView>().RPC("SetDetails", PhotonTargets.AllBufferedViaServer, meshNum, materialNumber, transform.localScale, GetComponent<MoveObjects>().speed);
         }
     }
 
@@ -30,7 +32,7 @@ public class Resource : MonoBehaviour {
         GameObject laserParticle = Instantiate(Resources.Load("BlastLaserEffect"), transform.localPosition, transform.rotation) as GameObject;
         laserParticle.GetComponent<ParticleSystemRenderer>().material.color = GameManager.gameManager.laserBoltColors[laserBoltColorIndex];
 
-        Destroy(gameObject);
+        DestroyResource();
     }
 
     [PunRPC]
@@ -39,51 +41,39 @@ public class Resource : MonoBehaviour {
         //Points will be granted
         PlayFabDataStore.playerScore += 10;
         GameHUDManager.gameHudManager.HudUpdate();
-        Destroy(gameObject);
+        DestroyResource();
     }
 
     void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Destination")
         {
-            Destroy(gameObject);
+            DestroyResource();
         }
+    }
+
+    void DestroyResource()
+    {
+        gameObject.SetActive(false);
+        gameObject.transform.position = GameManager.gameManager.objectPoolingTransform.position;
     }
 
     [PunRPC]
     public void SetDetails(int meshNumber, int materialNum, Vector3 newScale, float newSpeed)
     {
+        tag = "Resource";
         GetComponent<MeshFilter>().mesh = resourceMeshes[meshNumber];
         GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().mesh;
 
         GetComponent<MeshRenderer>().material = resourceMaterials[materialNum];
         transform.localScale = newScale;
         GetComponent<MoveObjects>().speed = newSpeed;
+        GetComponent<MoveObjects>().masterUpdated = true;
     }
+
+
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        /*
-        if (stream.isWriting)
-        {
-            if (PhotonNetwork.isMasterClient)
-            {
-                //We own this player: send the others our data
-                stream.SendNext(transform.position);
-                stream.SendNext(transform.rotation);
-            }
-
-        }
-        else
-        {
-            if (!PhotonNetwork.isMasterClient)
-            {
-                //Network player, receive data
-                objectPos = (Vector3)stream.ReceiveNext();
-                objectRot = (Quaternion)stream.ReceiveNext();
-            }
-
-
-        }
-        */
+        //
     }
 }
