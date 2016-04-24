@@ -40,8 +40,8 @@ public class CheckLocation : MonoBehaviour {
     //sets to true upon reaching speed limit
     bool earningPoints = false;
     //multiply the current speed by this since the speed variable is E-05
-    double multiplier = 100000;
-    double speedLimit = 15.0;
+   // double multiplier = 100000;
+    double speedLimit = 10.0;
 
     void Awake()
     {
@@ -95,11 +95,12 @@ public class CheckLocation : MonoBehaviour {
         lastUpdate = currentTime = Input.location.lastData.timestamp;
         // Stop service if there is no need to query location updates continuously
         //Input.location.Stop();
-        debugObject.SetActive(false);
+        //debugObject.SetActive(false);
     }
 
     void Update()
     {
+        /*
         //toggles debug text on and off
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -110,6 +111,7 @@ public class CheckLocation : MonoBehaviour {
             }
 
         }
+        */
         if (updatePosition == true)
         {
             if(updating == false && PhotonNetwork.isMasterClient)
@@ -123,6 +125,14 @@ public class CheckLocation : MonoBehaviour {
             
             if (PhotonNetwork.isMasterClient)
             {
+                if(lastLat == 0)
+                {
+                    lastLat = myLat;
+                }
+                if (lastLon == 0)
+                {
+                    lastLon = myLon;
+                }
                 if (Input.location.lastData.timestamp != currentTime)
                 {
                     lastUpdate = currentTime;
@@ -186,10 +196,10 @@ public class CheckLocation : MonoBehaviour {
                   + "\n Master (lat/long): " + masterLat + " / " + masterLon     //The lat and long of the master client
                   + "\n In range? -> " + inRange                                 //Are you in range of the master?
                   + "\n Time out of range: " + distanceTimer                     //How long have you been out of range?
-                  + "\n distance from master = " + GetDistance()                 //How far are you from the master?
-                  + "\n speed (with multiplier) = " + currentSpeed * multiplier//Your current speed
-                  +"\n distance since last update ="                             //The distance you have travelled since the last update
-                  + Mathf.Sqrt(Mathf.Pow((masterLon - lastLon), 2) + Mathf.Pow((masterLat - lastLat), 2))
+                  + "\n distance from master (miles)= " + Haversine(masterLon, masterLat, myLon, myLat)//How far are you from the master?
+                  + "\n speed (mph) = " + currentSpeed               //Your current speed
+                  +"\n distance since last update (miles)="                             //The distance you have travelled since the last update
+                  + Haversine(masterLon, masterLat, lastLon, lastLat)//Mathf.Sqrt(Mathf.Pow((masterLon - lastLon), 2) + Mathf.Pow((masterLat - lastLat), 2))
                 + "\n Master? = " + PhotonNetwork.isMasterClient                 //Are you the master client?
                 +"\n Earning Points? = " + earningPoints);                       //Should points be distributed?
 
@@ -197,6 +207,18 @@ public class CheckLocation : MonoBehaviour {
             }
             ////////////////////////////////////////////////////////////////       
         }
+    }
+    //uses the Haversine formula to get proper distance using latitude and longitude
+    public double Haversine(float lon1, float lat1, float lon2, float lat2)
+    {
+        //radius of earth
+        float R = 3961;
+        float dlon = lon2 - lon1;
+        float dlat = lat2 - lat1;
+        float a = (Mathf.Pow((Mathf.Sin(dlat / 2)), 2)) + Mathf.Cos(lat1) * Mathf.Cos(lat2) * Mathf.Pow((Mathf.Sin(dlon / 2)) , 2);
+        double c = 2 * Mathf.Atan2(Mathf.Sqrt(a), Mathf.Sqrt(1 - a));
+        double d = R * c;
+        return d;
     }
 
     void OnApplicationQuit()
@@ -212,20 +234,24 @@ public class CheckLocation : MonoBehaviour {
         return Mathf.Sqrt(Mathf.Pow((masterLon-myLon),2)+Mathf.Pow((masterLat-myLat),2));
     }
     //checks to see if host is in a car by comparing location over a period of time
+    //uses mph
     public double CheckSpeed()
     {
         if(!PhotonNetwork.isMasterClient)
         { return 0; }
         //check distance travelled based on longitude and latitude (and altitude?) over a set period of time
         //return true if in a car, return false if not
+
+        double distance = Haversine(masterLon, masterLat, lastLon, lastLat);// Mathf.Sqrt(Mathf.Pow((masterLon- lastLon), 2) + Mathf.Pow((masterLat-lastLat), 2));
+        double hourConversion = 0.000277778f;
+        double time = (currentTime-lastUpdate)*hourConversion;//hourconversion changes from seconds to hours
        
-        double distance = Mathf.Sqrt(Mathf.Pow((masterLon- lastLon), 2) + Mathf.Pow((masterLat-lastLat), 2));
-        double time = currentTime-lastUpdate;
         ///fix initial speed check
-        if(lastLon == 0 || lastLat == 0)
+        if (lastLon == 0 || lastLat == 0)
         {
             distance = 0;
         }
+        //in mph
         double speed = (distance / time);
         
         return speed;
@@ -260,7 +286,7 @@ public class CheckLocation : MonoBehaviour {
        
         //if master is moving over speed limit, set timer to 0
         //set earning points to true
-        if ((currentSpeed * multiplier) >= speedLimit)
+        if ((currentSpeed ) >= speedLimit)
         {
             earningPoints = true;
             speedTimer = 0;
@@ -280,7 +306,7 @@ public class CheckLocation : MonoBehaviour {
     }
     public void UpdateMasterPos()
     {
-        photonView.RPC("UpdateMaster", PhotonTargets.All, myLon, myLat);
+        photonView.RPC("UpdateMaster", PhotonTargets.OthersBuffered, myLon, myLat);
     }
     public void CompareLocation()
     {
@@ -309,7 +335,7 @@ public class CheckLocation : MonoBehaviour {
             Debug.Log("No need to compare master position to itself");
             return true;
         }
-        if (GetDistance() > variance)
+        if (Haversine(masterLon, masterLat, myLon, myLat) > variance)
         {
             return false;
         }

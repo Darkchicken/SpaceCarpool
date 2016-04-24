@@ -21,6 +21,8 @@ public class GameHUDManager : MonoBehaviour {
 
     private GameObject player;
 
+    public GameObject startButton;
+
     
 
 
@@ -33,6 +35,11 @@ public class GameHUDManager : MonoBehaviour {
         hudUpdateDelegate += SetFuel;
 
         pilotPanel.SetActive(true);
+        //prevent anyone other than host starting game
+        if(!PhotonNetwork.isMasterClient)
+        {
+            startButton.SetActive(false);
+        }
     }
 
     void Update()
@@ -56,8 +63,25 @@ public class GameHUDManager : MonoBehaviour {
             ///DEBUG CODE, REMOVE LATER
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-
+                GameObject player = GameObject.Find("Player(Clone)");
                 /////////////////////////////////////////////////////
+                pilotPanel.SetActive(false);
+               
+                player.GetComponent<PlayerCombatManager>().enabled = true;
+                
+                player.GetComponent<CameraController>().enabled = true;
+                
+#if UNITY_STANDALONE
+
+        player.GetComponent<MouseLook>().enabled = true;
+
+#endif
+
+#if UNITY_EDITOR
+
+                player.GetComponent<MouseLook>().enabled = true;
+
+#endif
             }
 
         }
@@ -105,13 +129,23 @@ public class GameHUDManager : MonoBehaviour {
 
     public void StartButtonClicked()
     {
+        startButton.SetActive(false);
+        GetComponent<PhotonView>().RPC("StartGame", PhotonTargets.All);
+        //GameObject player = GameObject.Find("Player(Clone)");
+    }
+
+    [PunRPC]
+    public void StartGame()
+    {
         
-        GameObject player = GameObject.Find("Player(Clone)");
-        pilotPanel.SetActive(false);
-        //enable scripts only for the controlling player
-        player.GetComponent<PlayerCombatManager>().enabled = true;
-        player.GetComponent<CameraController>().enabled = true;
-        player.GetComponent<CheckLocation>().enabled = true;
+        if (!PhotonNetwork.isMasterClient)
+        {
+            GameObject player = GameObject.Find("Player(Clone)");
+            pilotPanel.SetActive(false);
+            //enable scripts only for the controlling player
+            player.GetComponent<PlayerCombatManager>().enabled = true;
+            player.GetComponent<CameraController>().enabled = true;
+            //player.GetComponent<CheckLocation>().enabled = true;
 #if UNITY_STANDALONE
 
         player.GetComponent<MouseLook>().enabled = true;
@@ -120,10 +154,11 @@ public class GameHUDManager : MonoBehaviour {
 
 #if UNITY_EDITOR
 
-        player.GetComponent<MouseLook>().enabled = true;
+            player.GetComponent<MouseLook>().enabled = true;
 
 #endif
-
+        }
         GameManager.gameManager.isGameStarted = true;
+
     }
 }

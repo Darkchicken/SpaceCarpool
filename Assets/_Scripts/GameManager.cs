@@ -67,25 +67,7 @@ public class GameManager : MonoBehaviour {
         //instantiate player on all clients
         Debug.Log(spawnpointName);
         GameObject player = PhotonNetwork.Instantiate("Player", spawnPoint.transform.position, Quaternion.identity, 0);
-        if (player.GetComponent<PhotonView>().isMine)
-        {
-            //enable scripts only for the controlling player
-            player.GetComponent<PlayerCombatManager>().enabled = true;
-            player.GetComponent<CameraController>().enabled = true;
-            player.GetComponent<CheckLocation>().enabled = true;
-#if UNITY_STANDALONE
-
-            player.GetComponent<MouseLook>().enabled = true;
-
-#endif
-
-#if UNITY_EDITOR
-
-            player.GetComponent<MouseLook>().enabled = true;
-
-#endif
-
-        }
+       
 
         Debug.Log("Initial Values Set!");
         PlayFabDataStore.shipHealth = PlayFabDataStore.shipHealthMax;
