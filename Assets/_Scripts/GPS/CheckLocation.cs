@@ -10,8 +10,8 @@ public class CheckLocation : MonoBehaviour {
     GameObject debugObject;
     public Text debugText;
     bool updatePosition = false;
-    //distance a player can be from host before being out of range
-    float variance = 0.001f;
+    //distance a player can be from host before being out of range (in feet)
+    float variance = 10f;
     //timer to check how long player has been out of range
     float distanceTimer = 0;
     //timer to check how long player has been below speed limit
@@ -211,6 +211,18 @@ public class CheckLocation : MonoBehaviour {
     //uses the Haversine formula to get proper distance using latitude and longitude
     public double Haversine(float lon1, float lat1, float lon2, float lat2)
     {
+        float radlat1 = Mathf.PI * lat1 / 180;
+        float radlat2 = Mathf.PI * lat2 / 180;
+        float theta = lon1 - lon2;
+        float radtheta = Mathf.PI * theta / 180;
+        float dist = Mathf.Sin(radlat1) * Mathf.Sin(radlat2) + Mathf.Cos(radlat1) * Mathf.Cos(radlat2) * Mathf.Cos(radtheta);
+        dist = Mathf.Acos(dist);
+        dist = dist * 180 / Mathf.PI;
+        dist = dist * 60 * 1.1515f;
+        //if (unit == "K") { dist = dist * 1.609344 }
+        dist = dist * 0.8684f;
+        return dist;
+        /*
         //radius of earth
         float R = 3961;
         float dlon = lon2 - lon1;
@@ -219,6 +231,8 @@ public class CheckLocation : MonoBehaviour {
         double c = 2 * Mathf.Atan2(Mathf.Sqrt(a), Mathf.Sqrt(1 - a));
         double d = R * c;
         return d;
+        */
+
     }
 
     void OnApplicationQuit()
@@ -317,8 +331,10 @@ public class CheckLocation : MonoBehaviour {
         }
         else
         {
-           
-            if(GetDistance() > variance)
+            //distance returns in miles, convert to feet;
+            //distance=5280(ftdist)
+            float feetInMile = 5280;
+            if((GetDistance()/ feetInMile)> variance)
             {
                 inRange = false;
             }
