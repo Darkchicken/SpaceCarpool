@@ -55,8 +55,8 @@ public class CameraController : MonoBehaviour {
             Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.right);
             Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.up);
 
-            transform.localRotation = initialRotation * xQuaternion * yQuaternion;
-
+            transform.rotation = initialRotation * xQuaternion * yQuaternion;
+            
             //transform.Rotate(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, 0);//Input.gyro.rotationRateUnbiased.z
             playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
         }
@@ -106,6 +106,9 @@ public class CameraController : MonoBehaviour {
         gyroActive = false;
         transform.position = initialPosition;
         transform.rotation = initialRotation;
+        rotationX = 0F;
+        rotationY = 0F;
+        playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
         gyroActive = true;
     }
 }
