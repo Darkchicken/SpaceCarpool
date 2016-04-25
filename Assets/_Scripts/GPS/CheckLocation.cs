@@ -28,12 +28,12 @@ public class CheckLocation : MonoBehaviour {
 
     PhotonView photonView;
 
-    public float lastLon;
-    public float lastLat;
-    public float myLon;
-    public float myLat;
-    public float masterLon;
-    public float masterLat;
+    public double lastLon;
+    public double lastLat;
+    public double myLon;
+    public double myLat;
+    public double masterLon;
+    public double masterLat;
     double currentSpeed = 0;
     bool updating = false;
     //check if players should be earning points
@@ -209,14 +209,14 @@ public class CheckLocation : MonoBehaviour {
         }
     }
     //uses the Haversine formula to get proper distance using latitude and longitude
-    public double Haversine(float lon1, float lat1, float lon2, float lat2)
+    public double Haversine(double lon1, double lat1, double lon2, double lat2)
     {
-        float radlat1 = Mathf.PI * lat1 / 180;
-        float radlat2 = Mathf.PI * lat2 / 180;
-        float theta = lon1 - lon2;
-        float radtheta = Mathf.PI * theta / 180;
-        float dist = Mathf.Sin(radlat1) * Mathf.Sin(radlat2) + Mathf.Cos(radlat1) * Mathf.Cos(radlat2) * Mathf.Cos(radtheta);
-        dist = Mathf.Acos(dist);
+        double radlat1 = Mathf.PI * lat1 / 180;
+        double radlat2 = Mathf.PI * lat2 / 180;
+        double theta = lon1 - lon2;
+        double radtheta = Mathf.PI * theta / 180;
+        double dist = System.Math.Sin(radlat1) * System.Math.Sin(radlat2) + System.Math.Cos(radlat1) * System.Math.Cos(radlat2) * System.Math.Cos(radtheta);
+        dist = System.Math.Acos(dist);
         dist = dist * 180 / Mathf.PI;
         dist = dist * 60 * 1.1515f;
         //if (unit == "K") { dist = dist * 1.609344 }
@@ -239,13 +239,13 @@ public class CheckLocation : MonoBehaviour {
     {
         Input.location.Stop();
     }
-    public float GetDistance()
+    public double GetDistance()
     {
         //if master, return 0 (master is always 0 units from themself)
         if (PhotonNetwork.isMasterClient)
         { return 0; }
         //calculates distance between host and guest with longitude and latitude using distance formula
-        return Mathf.Sqrt(Mathf.Pow((masterLon-myLon),2)+Mathf.Pow((masterLat-myLat),2));
+        return System.Math.Sqrt(System.Math.Pow((masterLon-myLon),2)+System.Math.Pow((masterLat-myLat),2));
     }
     //checks to see if host is in a car by comparing location over a period of time
     //uses mph
@@ -257,14 +257,16 @@ public class CheckLocation : MonoBehaviour {
         //return true if in a car, return false if not
 
         double distance = Haversine(masterLon, masterLat, lastLon, lastLat);// Mathf.Sqrt(Mathf.Pow((masterLon- lastLon), 2) + Mathf.Pow((masterLat-lastLat), 2));
-        double hourConversion = 0.000277778f;
+        double hourConversion = 0.000277778;
         double time = (currentTime-lastUpdate)*hourConversion;//hourconversion changes from seconds to hours
        
         ///fix initial speed check
+        /*
         if (lastLon == 0 || lastLat == 0)
         {
             distance = 0;
         }
+        */
         //in mph
         double speed = (distance / time);
         
