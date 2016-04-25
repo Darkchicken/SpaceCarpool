@@ -28,12 +28,12 @@ public class CheckLocation : MonoBehaviour {
 
     PhotonView photonView;
 
-    public double lastLon;
-    public double lastLat;
-    public double myLon;
-    public double myLat;
-    public double masterLon;
-    public double masterLat;
+    public double lastLon = 0;
+    public double lastLat = 0;
+    public double myLon = 0 ;
+    public double myLat = 0;
+    public double masterLon = 0;
+    public double masterLat = 0;
     double currentSpeed = 0;
     bool updating = false;
     //check if players should be earning points
@@ -211,6 +211,10 @@ public class CheckLocation : MonoBehaviour {
     //uses the Haversine formula to get proper distance using latitude and longitude
     public double Haversine(double lon1, double lat1, double lon2, double lat2)
     {
+        //if the two locations are identical, skip calculations and return 0
+        if(lon1 == lon2 && lat1 == lat2)
+        {return 0;}
+
         double radlat1 = Mathf.PI * lat1 / 180;
         double radlat2 = Mathf.PI * lat2 / 180;
         double theta = lon1 - lon2;
