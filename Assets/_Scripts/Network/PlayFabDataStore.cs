@@ -25,6 +25,7 @@ public class PlayFabDataStore : MonoBehaviour
     public static int shipHealthMax = 100;
 
     public static int playerScore = 0;
+    public static int allTimeScore = 0;
 
     /*
     Dictionary<string, string> customData = new Dictionary<string, string>(); //create a dictionary for the data

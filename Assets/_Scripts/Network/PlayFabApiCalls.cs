@@ -24,6 +24,7 @@ public class PlayFabApiCalls : MonoBehaviour {
             PlayFabDataStore.playFabId = result.PlayFabId;
             PlayFabDataStore.userName = username;
             PlayFabDataStore.sessionTicket = result.SessionTicket;
+            UpdateUserStatistic("AllTime");
             GetPhotonToken();
         }, (error) =>
         {
@@ -50,6 +51,7 @@ public class PlayFabApiCalls : MonoBehaviour {
             PlayFabUserRegister.playFabUserRegister.gameObject.SetActive(false);
             PlayFabUserRegister.playFabUserRegister.mainMenu.gameObject.SetActive(true);
             Debug.Log("New Account Created!");
+            UpdateUserStatistic("AllTime");
             GetPhotonToken();
         }, (error) =>
         {
@@ -140,6 +142,51 @@ public class PlayFabApiCalls : MonoBehaviour {
             Debug.Log("Can't get Location");
             Debug.Log(error.ErrorMessage);
             Debug.Log(error.ErrorDetails);
+        });
+    }
+
+    //Get Player Statistics
+    public static void GetUserStatistic()
+    {
+        var request = new GetUserStatisticsRequest()
+        {
+            
+        };
+
+        PlayFabClientAPI.GetUserStatistics(request, (result) =>
+        {
+            foreach(var statistic in result.UserStatistics)
+            {
+                if(statistic.Value.ToString() == "AllTime")
+                {
+                    PlayFabDataStore.allTimeScore = statistic.Value;
+                }
+            }
+            Debug.Log("Statistic Retrieved");
+        },
+        (error) =>
+        {
+
+        });
+    }
+
+    //Updates Player Statistics
+    public static void UpdateUserStatistic(string statisticName)
+    {
+        Dictionary<string, int> statistics = new Dictionary<string, int>();
+        statistics.Add(statisticName, PlayFabDataStore.allTimeScore);
+        var request = new UpdateUserStatisticsRequest()
+        {
+            UserStatistics = statistics
+        };
+
+        PlayFabClientAPI.UpdateUserStatistics(request, (result) =>
+        {
+            Debug.Log("Statistic Updated");
+        },
+        (error) =>
+        {
+
         });
     }
 
