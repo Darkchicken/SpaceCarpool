@@ -27,6 +27,22 @@ public class MouseLook : MonoBehaviour
 
     Quaternion originalRotation;
 
+    void Start()
+    {
+        playerCamera = Camera.main;
+
+        originalRotation = transform.localRotation;
+
+        if (PlayerPrefs.GetInt("MotionActivate") == 1)
+        {
+            JoyStick = false;
+        }
+        else
+        {
+            JoyStick = true;
+        }
+    }
+
     void Update()
     {
         Vector2 moveVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical")) * sensitivityX;
@@ -106,7 +122,7 @@ public class MouseLook : MonoBehaviour
                 GyroControls
            -------------------------------------------------------------------------------------------------------------
         */
-        if (JoyStick == false)
+        if (JoyStick == false && !Application.isMobilePlatform)
         {
 
             if (axes == RotationAxes.MouseXAndY)
@@ -162,12 +178,7 @@ public class MouseLook : MonoBehaviour
         playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
     }
 
-    void Start()
-    {
-        playerCamera = Camera.main;
-
-        originalRotation = transform.localRotation;
-    }
+   
 
     public static float ClampAngle(float angle, float min, float max)
     {

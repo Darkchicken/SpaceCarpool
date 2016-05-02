@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UnityStandardAssets.CrossPlatformInput
 {
@@ -28,8 +29,16 @@ namespace UnityStandardAssets.CrossPlatformInput
 
         void Start()    //merged onEnable()
         {
-            m_StartPos = transform.position;
-            CreateVirtualAxes();
+            if (PlayerPrefs.GetInt("MotionActivate") == 1)
+            {
+                this.gameObject.GetComponent<Image>().enabled = false;
+                this.enabled = false;
+            }
+            else
+            {
+                m_StartPos = transform.position;
+                CreateVirtualAxes();
+            }
         }
 
 		void UpdateVirtualAxes(Vector3 value)

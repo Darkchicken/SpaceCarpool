@@ -46,6 +46,13 @@ public class PlayFabUserLogin : MonoBehaviour
        
 
     }
+    void Start()
+    {
+        if (!PlayerPrefs.HasKey("MotionActivate"))
+        {
+            PlayerPrefs.SetInt("MotionActivate", 1);
+        }
+    }
     void Update()
     {
         if (waitingForPlayers)
@@ -171,6 +178,18 @@ public class PlayFabUserLogin : MonoBehaviour
     {
         instructionPanel.SetActive(true);
 
+    }
+
+    public void ToggleControls()
+    {
+        if (PlayerPrefs.GetInt("MotionActivate") == 1)
+        {
+            PlayerPrefs.SetInt("MotionActivate", 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("MotionActivate", 1);
+        }
     }
     
 
