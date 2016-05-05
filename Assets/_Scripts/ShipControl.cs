@@ -32,6 +32,13 @@ public class ShipControl : MonoBehaviour {
         else
         {
             //GameOVER!!!
+            PlayFabDataStore.allTimeScore += PlayFabDataStore.playerScore;
+            PlayFabApiCalls.UpdateUserStatistic("AllTime");
+            if(PhotonNetwork.isMasterClient)
+            {
+                GameManager.gameManager.isGameStarted = false;
+                Debug.Log("Game Over");
+            }
         }
         
     }

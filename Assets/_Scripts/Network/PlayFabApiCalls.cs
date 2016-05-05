@@ -51,7 +51,7 @@ public class PlayFabApiCalls : MonoBehaviour {
             PlayFabUserRegister.playFabUserRegister.gameObject.SetActive(false);
             PlayFabUserRegister.playFabUserRegister.mainMenu.gameObject.SetActive(true);
             Debug.Log("New Account Created!");
-            UpdateUserStatistic("AllTime");
+            //UpdateUserStatistic("AllTime");
             GetPhotonToken();
         }, (error) =>
         {
@@ -99,6 +99,7 @@ public class PlayFabApiCalls : MonoBehaviour {
             PhotonNetwork.ConnectUsingSettings("1.0");
             //make sure all players are synced to same scene in same room
             PhotonNetwork.automaticallySyncScene = true;
+            GetUserStatistic();
         }, (error) =>
         {
             Debug.Log("Photon Connection Failed! " + error.ErrorMessage.ToString()); 
@@ -157,16 +158,18 @@ public class PlayFabApiCalls : MonoBehaviour {
         {
             foreach(var statistic in result.UserStatistics)
             {
-                if(statistic.Value.ToString() == "AllTime")
+                if(statistic.Key.ToString() == "AllTime")
                 {
                     PlayFabDataStore.allTimeScore = statistic.Value;
                 }
             }
-            Debug.Log("Statistic Retrieved");
+            Debug.Log("Statistic Retrieved " + PlayFabDataStore.allTimeScore);
         },
         (error) =>
         {
-
+            Debug.Log("Can't get user statistic");
+            Debug.Log(error.ErrorMessage);
+            Debug.Log(error.ErrorDetails);
         });
     }
 
@@ -186,7 +189,30 @@ public class PlayFabApiCalls : MonoBehaviour {
         },
         (error) =>
         {
+            Debug.Log("Can't update statistic");
+            Debug.Log(error.ErrorMessage);
+            Debug.Log(error.ErrorDetails);
+        });
+    }
 
+    //GetLeaderboard
+    public static void GetLeaderboard(string statisticName)
+    {
+        var request = new GetLeaderboardRequest()
+        {
+            StatisticName = statisticName,
+            StartPosition = 1
+        };
+
+        PlayFabClientAPI.GetLeaderboard(request, (result) =>
+        {
+            Debug.Log("Leaderboard Retrieved");
+        },
+        (error) =>
+        {
+            Debug.Log("Can't get Leaderboard");
+            Debug.Log(error.ErrorMessage);
+            Debug.Log(error.ErrorDetails);
         });
     }
 
