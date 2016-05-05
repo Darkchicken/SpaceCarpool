@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
+public class JoystickControls : MonoBehaviour {
 
-public class MouseLook : MonoBehaviour
-{
     public Camera playerCamera;
     int speed = 10;
+
+    bool JoyStick = true;
+    int JoyStickCounter = 1;
+    public float JoyStickSensitivity = 5f;
 
     public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
     public RotationAxes axes = RotationAxes.MouseXAndY;
@@ -22,36 +26,35 @@ public class MouseLook : MonoBehaviour
     float rotationY = 0F;
 
     Quaternion originalRotation;
-    bool joystick = false;
-
-    void Start()
+    // Use this for initialization
+    void Start ()
     {
         playerCamera = Camera.main;
 
         originalRotation = transform.localRotation;
+
         if (PlayerPrefs.GetInt("MotionActivate") == 1)
         {
-            joystick = false;
+            JoyStick = false;
         }
         else
         {
-            joystick = true;
+            JoyStick = true;
         }
-
-
     }
-
-    void Update()
+	
+	// Update is called once per frame
+	void Update ()
     {
-
-        if (joystick == false)
+        if (JoyStick == true)
         {
 
             if (axes == RotationAxes.MouseXAndY)
             {
                 // Read the mouse input axis
-                rotationX += Input.GetAxis("Mouse X") * sensitivityX;
-                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationX += CrossPlatformInputManager.GetAxis("Horizontal") * JoyStickSensitivity;
+                rotationY += CrossPlatformInputManager.GetAxis("Vertical") * JoyStickSensitivity;
+                Debug.Log(rotationX+"," +rotationY);
 
                 rotationX = ClampAngle(rotationX, minimumX, maximumX);
                 rotationY = ClampAngle(rotationY, minimumY, maximumY);
@@ -61,21 +64,22 @@ public class MouseLook : MonoBehaviour
                 //Debug.Log("X - Q :" + xQuaternion);
                 //Debug.Log("Y - Q :" + yQuaternion);
 
-                transform.localRotation = originalRotation * xQuaternion * yQuaternion;
+                playerCamera.transform.localRotation = originalRotation * xQuaternion * yQuaternion;
                 /*if((xQuaternion.y >= -0.5f && xQuaternion.y <= 0.5f) && (yQuaternion.x >= -0.3f && yQuaternion.x <= 0.3f))
                 {
                     transform.localRotation = originalRotation * xQuaternion * yQuaternion;
                 }*/
 
             }
+
             else if (axes == RotationAxes.MouseX)
             {
-                rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+                rotationX += CrossPlatformInputManager.GetAxis("Horizontal") * JoyStickSensitivity;
                 rotationX = ClampAngle(rotationX, minimumX, maximumX);
 
                 Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
 
-                transform.localRotation = originalRotation * xQuaternion;
+                playerCamera.transform.localRotation = originalRotation * xQuaternion;
                 /*if (xQuaternion.y >= -0.5f && xQuaternion.y <= 0.5f)
                 {
                     transform.localRotation = originalRotation * xQuaternion;
@@ -84,25 +88,20 @@ public class MouseLook : MonoBehaviour
             }
             else
             {
-                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY += CrossPlatformInputManager.GetAxis("Vertical") * JoyStickSensitivity;
                 rotationY = ClampAngle(rotationY, minimumY, maximumY);
 
                 Quaternion yQuaternion = Quaternion.AngleAxis(-rotationY, Vector3.right);
 
-                transform.localRotation = originalRotation * yQuaternion;
+                playerCamera.transform.localRotation = originalRotation * yQuaternion;
                 /*if (yQuaternion.x >= -0.3f && yQuaternion.x <= 0.3f)
                 {
                     transform.localRotation = originalRotation * yQuaternion;
                 }*/
 
             }
-
-            playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, transform.rotation, speed * Time.deltaTime);
-        }
+        }   //end if statement joystick = true
     }
-
-
-   
 
     public static float ClampAngle(float angle, float min, float max)
     {
