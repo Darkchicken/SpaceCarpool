@@ -52,6 +52,11 @@ public class PlayFabUserLogin : MonoBehaviour
         {
             PlayerPrefs.SetInt("MotionActivate", 1);
         }
+        else
+        {
+            PlayerPrefs.SetInt("MotionActivate", 1);
+        }
+
     }
     void Update()
     {
