@@ -16,11 +16,11 @@ public class JoystickControls : MonoBehaviour {
     public float sensitivityX = 15F;
     public float sensitivityY = 15F;
 
-    public float minimumX = -360F;
-    public float maximumX = 360F;
+    float minimumX = -70F;
+    float maximumX = 70F;
 
-    public float minimumY = -60F;
-    public float maximumY = 60F;
+    float minimumY = -60F;
+    float maximumY = 60F;
 
     float rotationX = 0F;
     float rotationY = 0F;
