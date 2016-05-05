@@ -25,7 +25,25 @@ public class GameOverScript : MonoBehaviour {
         {
             gameOverText.text = "You ended the scavenging mission";
         }
-	}
+        gameOverText.text += "\nLEADERBOARD:\n";
+        int count = 0;
+        foreach(var player in PlayFabDataStore.leaderboard)
+        {
+            if (player == null)
+            {
+                gameOverText.text += "EMPTY\n";
+            }
+            else
+            {
+                count++;
+                gameOverText.text += player + "\n";
+            }
+        }
+        for(int i = count; i<10;i++)
+        {
+            gameOverText.text += "EMPTY\n";
+        }
+    }
 	
 	public void ReturnToMenu()
     {

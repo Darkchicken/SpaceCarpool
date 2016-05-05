@@ -27,6 +27,8 @@ public class PlayFabDataStore : MonoBehaviour
     public static int playerScore = 0;
     public static int allTimeScore = 0;
 
+    public static List<string> leaderboard = new List<string>(); 
+
     /*
     Dictionary<string, string> customData = new Dictionary<string, string>(); //create a dictionary for the data
     string locationString = playerLatitude + "#" + playerLongitude;

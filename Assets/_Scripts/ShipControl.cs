@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ShipControl : MonoBehaviour {
 
@@ -39,6 +40,8 @@ public class ShipControl : MonoBehaviour {
                 GameManager.gameManager.isGameStarted = false;
                 Debug.Log("Game Over");
             }
+            SceneManager.LoadScene("EndingScene");
+
         }
         
     }

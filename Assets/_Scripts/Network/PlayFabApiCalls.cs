@@ -207,6 +207,11 @@ public class PlayFabApiCalls : MonoBehaviour {
         PlayFabClientAPI.GetLeaderboard(request, (result) =>
         {
             Debug.Log("Leaderboard Retrieved");
+            PlayFabDataStore.leaderboard.Clear();
+            foreach(var player in result.Leaderboard)
+            {
+                PlayFabDataStore.leaderboard.Add(player.DisplayName);
+            }
         },
         (error) =>
         {
