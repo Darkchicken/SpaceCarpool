@@ -16,6 +16,10 @@ public class ShipControl : MonoBehaviour {
 
         PlayFabDataStore.shipFuel -= 3;
         GameHUDManager.gameHudManager.HudUpdate();
+        if(PlayFabDataStore.shipFuel <= 0)
+        {
+            GameOver();
+        }
 
         StartCoroutine(FuelUse());
     }
@@ -28,21 +32,23 @@ public class ShipControl : MonoBehaviour {
         {
             Debug.Log("Ship took damage: " + damage);
             PlayFabDataStore.shipHealth -= damage;
-            
         }
         else
         {
-            //GameOVER!!!
-            PlayFabDataStore.allTimeScore += PlayFabDataStore.playerScore;
-            PlayFabApiCalls.UpdateUserStatistic("AllTime");
-            if(PhotonNetwork.isMasterClient)
-            {
-                GameManager.gameManager.isGameStarted = false;
-                Debug.Log("Game Over");
-            }
-            SceneManager.LoadScene("EndingScene");
-
+            GameOver();
         }
         
+    }
+    void GameOver()
+    {
+        //GameOVER!!!
+        PlayFabDataStore.allTimeScore += PlayFabDataStore.playerScore;
+        PlayFabApiCalls.UpdateUserStatistic("AllTime");
+        if (PhotonNetwork.isMasterClient)
+        {
+            GameManager.gameManager.isGameStarted = false;
+            Debug.Log("Game Over");
+        }
+        SceneManager.LoadScene("EndingScene");
     }
 }

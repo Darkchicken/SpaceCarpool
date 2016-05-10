@@ -8,6 +8,8 @@ public class GameOverScript : MonoBehaviour {
     public Text gameOverText;
     //displays the final score for this session
     public Text scoreText;
+    //displays the leaderboard
+    public Text leaderboardText;
 
 	// Use this for initialization
 	void Start ()
@@ -25,23 +27,24 @@ public class GameOverScript : MonoBehaviour {
         {
             gameOverText.text = "You ended the scavenging mission";
         }
-        gameOverText.text += "\nLEADERBOARD:\n";
+        leaderboardText.text = "LEADERBOARD:\n";
         int count = 0;
         foreach(var player in PlayFabDataStore.leaderboard)
         {
+
             if (player == null)
             {
-                gameOverText.text += "EMPTY\n";
+                leaderboardText.text += "EMPTY\n";
             }
             else
             {
                 count++;
-                gameOverText.text += player + "\n";
+                leaderboardText.text += player + "\n";
             }
         }
         for(int i = count; i<10;i++)
         {
-            gameOverText.text += "EMPTY\n";
+            leaderboardText.text += "EMPTY\n";
         }
     }
 	
